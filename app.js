@@ -565,9 +565,9 @@ function createDayCell(dayNum, weekdayStr, dayIndex, dateStr, isToday = false) {
   dayEl.className = 'calendar-day';
   if (isToday) dayEl.classList.add('today');
 
-  // タップした時のイベントを追加
+  // タップした時は即時出勤オン・オフをトグルする
   dayEl.addEventListener('click', () => {
-    openModalWithDate(dateStr);
+    toggleWorkDate(dateStr);
   });
 
   // 日付の表示
@@ -585,6 +585,42 @@ function createDayCell(dayNum, weekdayStr, dayIndex, dateStr, isToday = false) {
   }
 
   return dayEl;
+}
+
+// 日付の出勤状態をトグル（オン・オフ）切り替えする
+function toggleWorkDate(dateStr) {
+  const existingIndex = records.findIndex(r => r.date === dateStr);
+  
+  if (existingIndex !== -1) {
+    // すでに登録があれば削除する（オフ）
+    records.splice(existingIndex, 1);
+  } else {
+    // 登録がなければ、フォームにある前回の入力値を取得して自動登録（オン）
+    const startTime = document.getElementById('input-start-time').value || '08:00';
+    const endTime = document.getElementById('input-end-time').value || '17:00';
+    const earnings = parseInt(document.getElementById('input-earnings').value, 10) || 0;
+    const tips = parseInt(document.getElementById('input-tips').value, 10) || 0;
+    
+    const hours = calculateHours(startTime, endTime);
+    
+    const newRecord = {
+      id: Date.now().toString(),
+      date: dateStr,
+      startTime,
+      endTime,
+      hours,
+      earnings,
+      tips
+    };
+    
+    records.push(newRecord);
+  }
+  
+  // 日付順にソート
+  records.sort((a, b) => new Date(a.date) - new Date(b.date));
+  
+  saveRecords();
+  updateUI();
 }
 
 // 日付を指定して登録モーダルを開く
