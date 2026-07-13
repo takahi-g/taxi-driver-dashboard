@@ -143,19 +143,15 @@ function initEventListeners() {
     });
   }
 
-  // バックアップ・復元ボタンのイベント登録
-  const exportBtn = document.getElementById('export-btn');
-  const importTriggerBtn = document.getElementById('import-trigger-btn');
-  const importFileInput = document.getElementById('import-file-input');
+  // バックアップ・復元ボタンのイベント登録 (コピー＆ペースト方式)
+  const copyBackupBtn = document.getElementById('copy-backup-btn');
+  const pasteRestoreBtn = document.getElementById('paste-restore-btn');
 
-  if (exportBtn) {
-    exportBtn.addEventListener('click', exportData);
+  if (copyBackupBtn) {
+    copyBackupBtn.addEventListener('click', copyBackup);
   }
-  if (importTriggerBtn && importFileInput) {
-    importTriggerBtn.addEventListener('click', () => {
-      importFileInput.click();
-    });
-    importFileInput.addEventListener('change', importData);
+  if (pasteRestoreBtn) {
+    pasteRestoreBtn.addEventListener('click', pasteRestore);
   }
 }
 
@@ -246,74 +242,74 @@ function saveRecords() {
   localStorage.setItem('taxi_dashboard_records', JSON.stringify(state.records));
 }
 
-// バックアップデータをエクスポート (JSONダウンロード)
-function exportData() {
+// バックアップデータを文字列でコピー (Base64エンコード)
+function copyBackup() {
   if (state.records.length === 0) {
     alert('保存されているデータがありません。');
     return;
   }
   
   try {
-    const dataStr = JSON.stringify(state.records, null, 2);
-    const blob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
+    const dataStr = JSON.stringify(state.records);
+    // iOS Safariでも確実に動作する文字列用Base64エンコード
+    const base64Str = btoa(encodeURIComponent(dataStr).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+      return String.fromCharCode('0x' + p1);
+    }));
     
-    const dateStr = new Date().toISOString().split('T')[0];
-    const exportFileDefaultName = `taxi_backup_${dateStr}.json`;
-    
-    const linkElement = document.createElement('a');
-    linkElement.href = url;
-    linkElement.download = exportFileDefaultName;
-    document.body.appendChild(linkElement);
-    linkElement.click();
-    document.body.removeChild(linkElement);
-    URL.revokeObjectURL(url);
+    // クリップボードにコピー
+    navigator.clipboard.writeText(base64Str).then(() => {
+      alert('バックアップ用の文字列をコピーしました！\nメモ帳などに貼り付けて保管してください。');
+    }).catch(err => {
+      // コピーが自動でブロックされた場合のフォールバック（画面上から手動コピーを促す）
+      prompt('自動コピーが制限されました。以下の文字列をすべて選択してコピーしてください：', base64Str);
+    });
   } catch (error) {
-    alert('データのバックアップに失敗しました。');
+    alert('バックアップ文字列の作成に失敗しました。');
   }
 }
 
-// バックアップデータをインポート (JSONアップロード)
-function importData(e) {
-  const fileReader = new FileReader();
-  fileReader.onload = function (event) {
-    try {
-      const parsed = JSON.parse(event.target.result);
-      if (Array.isArray(parsed)) {
-        // インポートデータのサニタイズと復元
-        const importedRecords = parsed.map(r => ({
-          id: r.id || Date.now().toString() + Math.random().toString(36).substring(2, 5),
-          date: r.date || new Date().toISOString().split('T')[0],
-          startTime: r.startTime || '',
-          endTime: r.endTime || '',
-          hours: (r.hours !== undefined && r.hours !== null && !isNaN(r.hours)) ? Number(r.hours) : 0,
-          earnings: (r.earnings !== undefined && r.earnings !== null && !isNaN(r.earnings)) ? Number(r.earnings) : 0,
-          tips: (r.tips !== undefined && r.tips !== null && !isNaN(r.tips)) ? Number(r.tips) : 0
-        }));
+// 貼り付けられた文字列からデータを復元 (Base64デコード)
+function pasteRestore() {
+  const text = prompt('コピーしておいたバックアップ文字列をここに貼り付けてください：');
+  if (!text) return; // キャンセルされた場合
 
-        if (importedRecords.length === 0) {
-          alert('復元するデータが見つかりませんでした。');
-          return;
-        }
+  try {
+    // Base64デコード
+    const decodedStr = decodeURIComponent(atob(text.trim()).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    
+    const parsed = JSON.parse(decodedStr);
+    if (Array.isArray(parsed)) {
+      // データのサニタイズと復元
+      const importedRecords = parsed.map(r => ({
+        id: r.id || Date.now().toString() + Math.random().toString(36).substring(2, 5),
+        date: r.date || new Date().toISOString().split('T')[0],
+        startTime: r.startTime || '',
+        endTime: r.endTime || '',
+        hours: (r.hours !== undefined && r.hours !== null && !isNaN(r.hours)) ? Number(r.hours) : 0,
+        earnings: (r.earnings !== undefined && r.earnings !== null && !isNaN(r.earnings)) ? Number(r.earnings) : 0,
+        tips: (r.tips !== undefined && r.tips !== null && !isNaN(r.tips)) ? Number(r.tips) : 0
+      }));
 
-        const confirmMsg = `${importedRecords.length} 件のデータを復元しますか？\n(注: 現在保存されているデータはすべて上書きされます)`;
-        if (confirm(confirmMsg)) {
-          state.records = importedRecords;
-          sortRecords();
-          saveRecords();
-          updateUI();
-          alert('データの復元が正常に完了しました！');
-        }
-      } else {
-        alert('無効なバックアップファイル形式です。');
+      if (importedRecords.length === 0) {
+        alert('復元するデータが見つかりませんでした。');
+        return;
       }
-    } catch (error) {
-      alert('ファイルの解析中にエラーが発生しました。ファイルが破損している可能性があります。');
-    }
-  };
 
-  if (e.target.files[0]) {
-    fileReader.readAsText(e.target.files[0]);
+      const confirmMsg = `${importedRecords.length} 件のデータを復元しますか？\n(注: 現在保存されているデータはすべて上書きされます)`;
+      if (confirm(confirmMsg)) {
+        state.records = importedRecords;
+        sortRecords();
+        saveRecords();
+        updateUI();
+        alert('データの復元が正常に完了しました！');
+      }
+    } else {
+      alert('無効なバックアップ文字列です。');
+    }
+  } catch (error) {
+    alert('復元に失敗しました。貼り付けられた文字列が正しくないか、破損している可能性があります。');
   }
 }
 
