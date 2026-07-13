@@ -602,8 +602,10 @@ function openModalWithDate(dateStr) {
   if (existingRecord) {
     document.getElementById('input-start-time').value = existingRecord.startTime;
     document.getElementById('input-end-time').value = existingRecord.endTime;
-    document.getElementById('input-earnings').value = existingRecord.earnings;
-    document.getElementById('input-tips').value = existingRecord.tips;
+    
+    // 金額やチップが0の場合は空文字を設定し、placeholder="0" に任せる（消す手間を削減）
+    document.getElementById('input-earnings').value = existingRecord.earnings === 0 ? '' : existingRecord.earnings;
+    document.getElementById('input-tips').value = existingRecord.tips === 0 ? '' : existingRecord.tips;
   } else {
     // 新規登録時は入力欄をデフォルト値（ベース）に設定
     document.getElementById('input-start-time').value = '09:00';
