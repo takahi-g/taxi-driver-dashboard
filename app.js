@@ -130,7 +130,7 @@ function initEventListeners() {
   const refreshBtn = document.getElementById('refresh-btn');
   if (refreshBtn) {
     refreshBtn.addEventListener('click', function() {
-      const icon = this.querySelector('i');
+      const icon = this.querySelector('svg') || this.querySelector('i');
       if (icon) {
         icon.classList.add('spin-animate');
       }
