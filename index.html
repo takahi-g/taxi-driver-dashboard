@@ -11,23 +11,27 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Taxi Dashboard">
+  
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
-  <!-- Lucide Icons -->
+  
+  <!-- Lucide Icons (固定バージョンでロード速度とキャッシュの安定化) -->
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.321.0/dist/umd/lucide.min.js"></script>
-  <link rel="stylesheet" href="style-v202607131740.css">
+  
+  <!-- スタイルシートの読み込み (キャッシュ対策用パラメータ付与) -->
+  <link rel="stylesheet" href="style.css?v=2026.07.13.1724">
 </head>
 <body>
   <div class="app-container">
     <!-- トップバー (バージョン & 更新ボタン) -->
     <div class="top-bar">
-      <span class="version-badge">v2026.07.13.1740</span>
+      <span class="version-badge">v2026.07.13.Refactored</span>
       <button id="refresh-btn" class="btn-icon" title="ページを更新"><i data-lucide="refresh-cw"></i></button>
     </div>
 
-    <!-- サイドバー / ヘッダー -->
+    <!-- メインヘッダー -->
     <header class="main-header">
       <div class="logo-area">
         <div>
@@ -60,7 +64,7 @@
         </section>
       </div>
 
-      <!-- ペイン2: ダッシュボード (集計数値 & グラフ) -->
+      <!-- ペイン2: ダッシュボード (集計数値 & 履歴) -->
       <div id="pane-dashboard" class="tab-pane pane-hidden">
         <!-- サマリーカードセクション -->
         <section class="summary-section">
@@ -117,40 +121,42 @@
       <div id="pane-settings" class="tab-pane pane-hidden">
         <!-- 入力用カレンダーセクション -->
         <section class="calendar-section card" id="calendar-section">
-          <div class="card-header calendar-header-layout">
-            <h2><i data-lucide="calendar-days"></i> 出勤日登録カレンダー</h2>
-            <div class="calendar-controls" id="calendar-controls">
+          <div class="calendar-header-layout">
+            <div class="logo-area">
+              <h2><i data-lucide="calendar-days"></i> 登録カレンダー</h2>
+            </div>
+            <div class="calendar-controls">
               <button id="prev-month-btn" class="btn-icon" title="前月"><i data-lucide="chevron-left"></i></button>
               <span id="current-month-label" class="calendar-month-label">2026年 7月</span>
               <button id="next-month-btn" class="btn-icon" title="次月"><i data-lucide="chevron-right"></i></button>
             </div>
           </div>
-          <div class="calendar-grid-wrapper">
-            <div class="calendar-weekdays">
-              <div class="weekday text-danger">日</div>
-              <div class="weekday">月</div>
-              <div class="weekday">火</div>
-              <div class="weekday">水</div>
-              <div class="weekday">木</div>
-              <div class="weekday">金</div>
-              <div class="weekday text-info">土</div>
-            </div>
-            <div id="calendar-days-grid" class="calendar-days-grid">
-              <!-- JSで動的に追加されます -->
-            </div>
+          
+          <div class="calendar-weekdays">
+            <div class="weekday day-number sun">日</div>
+            <div class="weekday">月</div>
+            <div class="weekday">火</div>
+            <div class="weekday">水</div>
+            <div class="weekday">木</div>
+            <div class="weekday">金</div>
+            <div class="weekday day-number sat">土</div>
+          </div>
+          
+          <div id="calendar-days-grid" class="calendar-days-grid">
+            <!-- JSで動的に追加されます -->
           </div>
         </section>
 
-        <!-- アプリ設定 -->
-        <section class="settings-section card mt-4">
+        <!-- 表示設定セクション -->
+        <section class="settings-section card">
           <div class="card-header">
-            <h2><i data-lucide="sliders-horizontal"></i> アプリ設定</h2>
+            <h2><i data-lucide="sliders"></i> 表示設定</h2>
           </div>
           <div class="settings-list">
             <div class="settings-item">
               <div class="settings-info">
-                <span class="settings-title">出勤日のみリスト表示する</span>
-                <span class="settings-desc">「カレンダー」タブの出勤リストで、登録がある日だけをすっきりと表示します。</span>
+                <span class="settings-title">出勤日のみ表示</span>
+                <span class="settings-desc">カレンダータブで未出勤の日を非表示にします</span>
               </div>
               <label class="switch">
                 <input type="checkbox" id="setting-work-only">
@@ -160,51 +166,10 @@
           </div>
         </section>
       </div>
-
     </main>
 
-    <!-- 勤務記録追加モーダル -->
-    <div id="record-modal" class="modal">
-      <div class="modal-content card">
-        <div class="modal-header">
-          <h2><i data-lucide="edit-3"></i> 勤務記録の追加</h2>
-          <button id="close-modal-btn" class="close-btn"><i data-lucide="x"></i></button>
-        </div>
-        <form id="record-form">
-          <div class="form-group">
-            <label for="input-date">日付</label>
-            <input type="date" id="input-date" required>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="input-start-time">勤務開始時間</label>
-              <input type="time" id="input-start-time" required>
-            </div>
-            <div class="form-group">
-              <label for="input-end-time">勤務終了時間</label>
-              <input type="time" id="input-end-time" required>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="input-earnings">売上金額 (円)</label>
-              <input type="number" id="input-earnings" min="0" placeholder="例: 35000" required>
-            </div>
-            <div class="form-group">
-              <label for="input-tips">チップ額 (円)</label>
-              <input type="number" id="input-tips" min="0" placeholder="例: 1500" required>
-            </div>
-          </div>
-          <div class="form-actions">
-            <button type="button" id="cancel-btn" class="btn btn-secondary">キャンセル</button>
-            <button type="submit" class="btn btn-primary">保存する</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- 浮かせるカプセル型下部ナビゲーションバー -->
-    <nav class="tab-bar" id="tab-bar">
+    <!-- 下部フローティングナビゲーションバー -->
+    <nav class="bottom-nav">
       <button class="tab-item active" data-pane="pane-calendar">
         <i data-lucide="calendar"></i>
         <span>カレンダー</span>
@@ -220,6 +185,49 @@
     </nav>
   </div>
 
-  <script src="app-v202607131740.js"></script>
+  <!-- 勤務記録入力・編集モーダル -->
+  <div id="record-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>勤務の記録</h3>
+        <button id="close-modal-btn" class="close-btn" title="閉じる">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="record-form">
+        <div class="form-group">
+          <label for="input-date">日付</label>
+          <input type="date" id="input-date" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="input-start-time">勤務開始時間</label>
+            <input type="time" id="input-start-time">
+          </div>
+          <div class="form-group">
+            <label for="input-end-time">勤務終了時間</label>
+            <input type="time" id="input-end-time">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="input-earnings">売上金額 (円)</label>
+            <input type="number" id="input-earnings" min="0" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label for="input-tips">チップ額 (円)</label>
+            <input type="number" id="input-tips" min="0" placeholder="0">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="cancel-btn" class="btn btn-secondary">キャンセル</button>
+          <button type="submit" class="btn btn-primary">保存する</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- アプリケーションコードの読み込み (キャッシュ対策用パラメータ付与) -->
+  <script src="app.js?v=2026.07.13.1724"></script>
 </body>
 </html>
