@@ -1023,3 +1023,14 @@ input:focus {
     gap: 0.25rem;             /* ボタン（編集・削除）間の余白を狭く */
   }
 }
+
+/* 更新時の回転アニメーションエフェクト */
+@keyframes buttonSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.spin-animate {
+  animation: buttonSpin 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-block;
+}

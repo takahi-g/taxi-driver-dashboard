@@ -112,10 +112,21 @@ function initEventListeners() {
     renderWorkList();
   });
 
-  // ページ更新ボタン (iOS WebAppのキャッシュバグを避けるためタイムスタンプ付きで遷移)
-  document.getElementById('refresh-btn').addEventListener('click', () => {
-    window.location.replace(window.location.pathname + '?t=' + Date.now());
-  });
+  // ページ更新ボタン (回転エフェクトを350ms見せてからタイムスタンプ付き遷移)
+  const refreshBtn = document.getElementById('refresh-btn');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', function() {
+      const icon = this.querySelector('i');
+      if (icon) {
+        icon.classList.add('spin-animate');
+      }
+      
+      // 350ms回転させてからリロードを実行
+      setTimeout(() => {
+        window.location.replace(window.location.pathname + '?t=' + Date.now());
+      }, 350);
+    });
+  }
 
   // 下部フローティングタブバーの切り替え
   const tabs = document.querySelectorAll('.tab-item');
