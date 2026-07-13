@@ -346,36 +346,21 @@ function renderCalendar() {
   const grid = document.getElementById('calendar-days-grid');
   grid.innerHTML = '';
 
-  // その月の最初の日の曜日 (0:日, 1:月...)
-  const firstDayIndex = new Date(year, month, 1).getDay();
   // その月の日数
   const totalDays = new Date(year, month + 1, 0).getDate();
-  // 前月の日数
-  const prevTotalDays = new Date(year, month, 0).getDate();
 
-  // 前月分の日付を表示するセル
-  for (let i = firstDayIndex; i > 0; i--) {
-    const day = prevTotalDays - i + 1;
-    const dateStr = formatDateStr(year, month - 1, day);
-    const dayEl = createDayCell(day, dateStr, true);
-    grid.appendChild(dayEl);
-  }
-
-  // 当月分の日付セル
+  // 当月の1日から末日まで順番にセルを生成（前月・翌月ダミーは描画しない）
   const todayStr = new Date().toISOString().split('T')[0];
   for (let i = 1; i <= totalDays; i++) {
     const dateStr = formatDateStr(year, month, i);
     const isToday = dateStr === todayStr;
-    const dayEl = createDayCell(i, dateStr, false, isToday);
-    grid.appendChild(dayEl);
-  }
+    
+    // 曜日の取得 (0:日, 1:月, ... 6:土)
+    const dayIndex = new Date(year, month, i).getDay();
+    const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
+    const weekdayStr = weekdays[dayIndex];
 
-  // 翌月分の日付セル（合計で42マスまたは7の倍数になるように調整）
-  const currentCells = firstDayIndex + totalDays;
-  const nextMonthCells = (7 - (currentCells % 7)) % 7;
-  for (let i = 1; i <= nextMonthCells; i++) {
-    const dateStr = formatDateStr(year, month + 1, i);
-    const dayEl = createDayCell(i, dateStr, true);
+    const dayEl = createDayCell(i, weekdayStr, dayIndex, dateStr, isToday);
     grid.appendChild(dayEl);
   }
 }
@@ -390,16 +375,17 @@ function formatDateStr(year, month, day) {
 }
 
 // カレンダーのセル要素を作成
-function createDayCell(dayNum, dateStr, isOtherMonth, isToday = false) {
+function createDayCell(dayNum, weekdayStr, dayIndex, dateStr, isToday = false) {
   const dayEl = document.createElement('div');
   dayEl.className = 'calendar-day';
-  if (isOtherMonth) dayEl.classList.add('other-month');
   if (isToday) dayEl.classList.add('today');
 
-  // 日付の数字
+  // 日付と曜日の表示
   const numEl = document.createElement('span');
   numEl.className = 'day-number';
-  numEl.innerText = dayNum;
+  if (dayIndex === 0) numEl.classList.add('sun');
+  if (dayIndex === 6) numEl.classList.add('sat');
+  numEl.innerText = `${dayNum} (${weekdayStr})`;
   dayEl.appendChild(numEl);
 
   // その日の勤務データを集計

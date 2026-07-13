@@ -254,32 +254,22 @@ body {
   gap: 0.5rem;
 }
 
-.calendar-weekdays {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  text-align: center;
-  font-weight: 600;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 0.5rem;
-}
-
 .calendar-days-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 0.5rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
 }
 
 .calendar-day {
-  min-height: 85px;
-  padding: 0.5rem;
+  min-height: 70px;
+  padding: 0.75rem 1rem;
   background-color: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-between;
+  align-items: center;
   transition: var(--transition-smooth);
   position: relative;
 }
@@ -289,19 +279,26 @@ body {
   border-color: rgba(255, 255, 255, 0.15);
 }
 
-.calendar-day.other-month {
-  opacity: 0.2;
-}
-
 .calendar-day.today {
   border-color: var(--color-primary);
   background-color: rgba(245, 176, 65, 0.05);
 }
 
 .day-number {
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 700;
-  color: var(--text-muted);
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.day-number.sun {
+  color: #fc8181;
+}
+
+.day-number.sat {
+  color: #63b3ed;
 }
 
 .calendar-day.today .day-number {
@@ -310,35 +307,40 @@ body {
 
 .day-info {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  align-items: flex-end;
-  margin-top: 0.25rem;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .day-hours {
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   color: var(--color-info);
   font-weight: 600;
+  background-color: rgba(52, 152, 219, 0.1);
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--radius-sm);
 }
 
 .day-earnings {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 700;
   color: var(--color-success);
 }
 
 .day-total {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   font-weight: 800;
   color: #fff;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: 2px;
+  background-color: rgba(255, 255, 255, 0.06);
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
 }
 
 .calendar-day.has-work {
   background-color: rgba(22, 28, 45, 0.85);
-  border-color: rgba(245, 176, 65, 0.2);
+  border-color: rgba(245, 176, 65, 0.25);
+  box-shadow: inset 0 0 10px rgba(245, 176, 65, 0.05);
 }
 
 /* サマリーカードセクション */
@@ -648,20 +650,23 @@ input:focus {
   }
   .calendar-day {
     min-height: 60px;
-    padding: 0.25rem;
+    padding: 0.5rem;
+    flex-direction: row;
   }
   .day-info {
-    gap: 0px;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
   }
   .day-hours {
-    font-size: 0.6rem;
+    font-size: 0.65rem;
+    padding: 0.05rem 0.25rem;
   }
   .day-earnings {
-    font-size: 0.65rem;
+    font-size: 0.7rem;
   }
   .day-total {
-    font-size: 0.65rem;
-    padding-top: 0px;
-    border-top: none;
+    font-size: 0.7rem;
+    padding: 0.05rem 0.3rem;
   }
 }
