@@ -165,7 +165,10 @@ body {
   font-weight: 600;
   font-size: 0.9rem;
   cursor: pointer;
-  border: none;
+  border: 0 solid transparent; /* 枠線を完全に消去 */
+  outline: none;               /* フォーカス枠を消去 */
+  -webkit-appearance: none;    /* iOS標準のボタン外観を完全にリセット */
+  appearance: none;
   transition: var(--transition-smooth);
 }
 
