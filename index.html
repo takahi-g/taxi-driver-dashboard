@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taxi Driver Dashboard</title>
+  <meta name="description" content="タクシードライバー向けの勤務日数、時間、売上、チップ管理ダッシュボード">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- サイドバー / ヘッダー -->
+    <header class="main-header">
+      <div class="logo-area">
+        <div class="logo-icon">
+          <i data-lucide="cab"></i>
+        </div>
+        <div>
+          <h1>Taxi Dashboard</h1>
+          <p class="subtitle">Driver Performance & Earnings Tracker</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="add-record-btn" class="btn btn-primary">
+          <i data-lucide="plus"></i> 勤務を記録する
+        </button>
+      </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+      <!-- サマリーカードセクション -->
+      <section class="summary-section">
+        <div class="summary-card" id="card-days">
+          <div class="card-icon"><i data-lucide="calendar"></i></div>
+          <div class="card-data">
+            <span class="card-label">出勤日数</span>
+            <span class="card-value" id="val-days">0 <span class="unit">日</span></span>
+          </div>
+        </div>
+        <div class="summary-card" id="card-hours">
+          <div class="card-icon"><i data-lucide="clock"></i></div>
+          <div class="card-data">
+            <span class="card-label">総勤務時間</span>
+            <span class="card-value" id="val-hours">0 <span class="unit">時間</span></span>
+          </div>
+        </div>
+        <div class="summary-card text-success" id="card-earnings">
+          <div class="card-icon"><i data-lucide="japanese-yen"></i></div>
+          <div class="card-data">
+            <span class="card-label">総売上金額</span>
+            <span class="card-value" id="val-earnings">¥0</span>
+          </div>
+        </div>
+        <div class="summary-card text-accent" id="card-tips">
+          <div class="card-icon"><i data-lucide="sparkles"></i></div>
+          <div class="card-data">
+            <span class="card-label">総チップ額</span>
+            <span class="card-value" id="val-tips">¥0</span>
+          </div>
+        </div>
+        <div class="summary-card text-info" id="card-hourly">
+          <div class="card-icon"><i data-lucide="trending-up"></i></div>
+          <div class="card-data">
+            <span class="card-label">平均時給 (売上+チップ)</span>
+            <span class="card-value" id="val-hourly">¥0<span class="unit">/h</span></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- グラフ & 統計 -->
+      <section class="charts-section">
+        <div class="chart-container card">
+          <div class="card-header">
+            <h2><i data-lucide="bar-chart-3"></i> 日別売上・チップ推移</h2>
+            <div class="chart-legend">
+              <span class="legend-item"><span class="legend-color bg-primary"></span>売上</span>
+              <span class="legend-item"><span class="legend-color bg-accent"></span>チップ</span>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="earningsChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- 履歴テーブル -->
+      <section class="history-section card">
+        <div class="card-header">
+          <h2><i data-lucide="history"></i> 勤務履歴</h2>
+          <span class="badge" id="record-count">0 件の記録</span>
+        </div>
+        <div class="table-wrapper">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>日付</th>
+                <th>時間</th>
+                <th>勤務時間</th>
+                <th>売上金額</th>
+                <th>チップ</th>
+                <th>合計獲得額</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="history-tbody">
+              <!-- JSで動的に追加されます -->
+              <tr class="empty-state">
+                <td colspan="7">
+                  <div class="empty-message">
+                    <i data-lucide="inbox"></i>
+                    <p>勤務記録がありません。「勤務を記録する」ボタンから登録してください。</p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <!-- 勤務記録追加モーダル -->
+    <div id="record-modal" class="modal">
+      <div class="modal-content card">
+        <div class="modal-header">
+          <h2><i data-lucide="edit-3"></i> 勤務記録の追加</h2>
+          <button id="close-modal-btn" class="close-btn"><i data-lucide="x"></i></button>
+        </div>
+        <form id="record-form">
+          <div class="form-group">
+            <label for="input-date">日付</label>
+            <input type="date" id="input-date" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="input-start-time">勤務開始時間</label>
+              <input type="time" id="input-start-time" required>
+            </div>
+            <div class="form-group">
+              <label for="input-end-time">勤務終了時間</label>
+              <input type="time" id="input-end-time" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="input-earnings">売上金額 (円)</label>
+              <input type="number" id="input-earnings" min="0" placeholder="例: 35000" required>
+            </div>
+            <div class="form-group">
+              <label for="input-tips">チップ額 (円)</label>
+              <input type="number" id="input-tips" min="0" placeholder="例: 1500" required>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" id="cancel-btn" class="btn btn-secondary">キャンセル</button>
+            <button type="submit" class="btn btn-primary">保存する</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
