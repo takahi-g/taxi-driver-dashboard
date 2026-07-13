@@ -33,7 +33,9 @@ function initEventListeners() {
   const recordForm = document.getElementById('record-form');
 
   const closeModal = () => {
-    recordModal.classList.remove('show');
+    if (recordModal) {
+      recordModal.classList.remove('show');
+    }
   };
 
   if (addRecordBtn) {
@@ -43,8 +45,12 @@ function initEventListeners() {
     });
   }
 
-  closeModalBtn.addEventListener('click', closeModal);
-  cancelBtn.addEventListener('click', closeModal);
+  if (closeModalBtn) {
+    closeModalBtn.addEventListener('click', closeModal);
+  }
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', closeModal);
+  }
 
   // モーダル外クリックで閉じる
   window.addEventListener('click', (e) => {
@@ -54,65 +60,73 @@ function initEventListeners() {
   });
 
   // 登録・編集フォーム送信
-  recordForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    const date = document.getElementById('input-date').value;
-    const startTime = document.getElementById('input-start-time').value;
-    const endTime = document.getElementById('input-end-time').value;
-    const earnings = parseInt(document.getElementById('input-earnings').value, 10) || 0;
-    const tips = parseInt(document.getElementById('input-tips').value, 10) || 0;
+  if (recordForm) {
+    recordForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const date = document.getElementById('input-date').value;
+      const startTime = document.getElementById('input-start-time').value;
+      const endTime = document.getElementById('input-end-time').value;
+      const earnings = parseInt(document.getElementById('input-earnings').value, 10) || 0;
+      const tips = parseInt(document.getElementById('input-tips').value, 10) || 0;
 
-    // 勤務時間の計算
-    const hours = (startTime && endTime) ? calculateHours(startTime, endTime) : 0;
+      // 勤務時間の計算
+      const hours = (startTime && endTime) ? calculateHours(startTime, endTime) : 0;
 
-    const newRecord = {
-      id: Date.now().toString(),
-      date,
-      startTime,
-      endTime,
-      hours,
-      earnings,
-      tips
-    };
+      const newRecord = {
+        id: Date.now().toString(),
+        date,
+        startTime,
+        endTime,
+        hours,
+        earnings,
+        tips
+      };
 
-    // 同一日付の既存データがあれば上書き、なければ新規追加
-    const existingIndex = state.records.findIndex(r => r.date === date);
-    if (existingIndex !== -1) {
-      newRecord.id = state.records[existingIndex].id;
-      state.records[existingIndex] = newRecord;
-    } else {
-      state.records.push(newRecord);
-    }
+      // 同一日付の既存データがあれば上書き、なければ新規追加
+      const existingIndex = state.records.findIndex(r => r.date === date);
+      if (existingIndex !== -1) {
+        newRecord.id = state.records[existingIndex].id;
+        state.records[existingIndex] = newRecord;
+      } else {
+        state.records.push(newRecord);
+      }
 
-    // 日付順にソート (文字列比較でiOSのDateパースバグを回避)
-    sortRecords();
+      // 日付順にソート (文字列比較でiOSのDateパースバグを回避)
+      sortRecords();
 
-    saveRecords();
-    updateUI();
-    closeModal();
+      saveRecords();
+      updateUI();
+      closeModal();
 
-    // 登録完了時に自動的にカレンダー（出勤リスト）タブに切り替え
-    const calendarTab = document.querySelector('.tab-item[data-pane="pane-calendar"]');
-    if (calendarTab) {
-      calendarTab.click();
-    }
-  });
+      // 登録完了時に自動的にカレンダー（出勤リスト）タブに切り替え
+      const calendarTab = document.querySelector('.tab-item[data-pane="pane-calendar"]');
+      if (calendarTab) {
+        calendarTab.click();
+      }
+    });
+  }
 
   // カレンダー月変更コントロール
-  document.getElementById('prev-month-btn').addEventListener('click', () => {
-    state.calendarDate.setMonth(state.calendarDate.getMonth() - 1);
-    renderInputCalendar();
-    renderWorkList();
-  });
+  const prevMonthBtn = document.getElementById('prev-month-btn');
+  if (prevMonthBtn) {
+    prevMonthBtn.addEventListener('click', () => {
+      state.calendarDate.setMonth(state.calendarDate.getMonth() - 1);
+      renderInputCalendar();
+      renderWorkList();
+    });
+  }
 
-  document.getElementById('next-month-btn').addEventListener('click', () => {
-    state.calendarDate.setMonth(state.calendarDate.getMonth() + 1);
-    renderInputCalendar();
-    renderWorkList();
-  });
+  const nextMonthBtn = document.getElementById('next-month-btn');
+  if (nextMonthBtn) {
+    nextMonthBtn.addEventListener('click', () => {
+      state.calendarDate.setMonth(state.calendarDate.getMonth() + 1);
+      renderInputCalendar();
+      renderWorkList();
+    });
+  }
 
-  // ページ更新ボタン (回転エフェクトを350ms見せてからタイムスタンプ付き遷移)
+  // ページ更新ボタン (回転エフェクトを350ms見せてからリロード)
   const refreshBtn = document.getElementById('refresh-btn');
   if (refreshBtn) {
     refreshBtn.addEventListener('click', function() {
@@ -123,7 +137,12 @@ function initEventListeners() {
       
       // 350ms回転させてからリロードを実行
       setTimeout(() => {
-        window.location.replace(window.location.pathname + '?t=' + Date.now());
+        // iOS PWA（ホーム追加後）でクエリパラメータを付与すると画面崩れやアセットブロックが起きるため、スタンドアロン判定して安全リロード
+        if (window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) {
+          window.location.reload();
+        } else {
+          window.location.replace(window.location.pathname + '?t=' + Date.now());
+        }
       }, 350);
     });
   }
