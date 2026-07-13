@@ -323,8 +323,9 @@ body {
   border-radius: var(--radius-md);
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
+  gap: 1.5rem;
   transition: var(--transition-smooth);
   cursor: pointer;
   min-height: 54px;
@@ -340,27 +341,27 @@ body {
 .work-list-item .day-number {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--text-main);
+  color: #3498db;
   flex-shrink: 0;
 }
 
-.work-list-item .day-number.sun { color: #fc8181; }
-.work-list-item .day-number.sat { color: #63b3ed; }
+.work-list-item .day-number.sun { color: #3498db; }
+.work-list-item .day-number.sat { color: #3498db; }
 
 .work-list-item .day-info {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
   flex-shrink: 0;
   white-space: nowrap;
 }
 
 .work-list-item .day-hours {
   font-size: 1rem;
-  color: var(--color-info);
+  color: #e67e22;
   font-weight: 600;
-  background-color: rgba(52, 152, 219, 0.15);
+  background-color: rgba(230, 126, 34, 0.15);
   padding: 0.2rem 0.5rem;
   border-radius: var(--radius-sm);
 }
@@ -368,13 +369,13 @@ body {
 .work-list-item .day-earnings {
   font-size: 1rem;
   font-weight: 700;
-  color: var(--color-success);
+  color: #f1c40f;
 }
 
 .work-list-item .day-tips {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--color-accent);
+  color: #ffffff;
 }
 
 .settings-item {
@@ -899,6 +900,16 @@ input:focus {
   .history-table th, .history-table td {
     padding: 0.75rem 0.5rem;
     font-size: 0.85rem;
+  }
+
+  .calendar-days-grid {
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr) !important;
+    gap: 0.25rem !important;
+  }
+  .calendar-day {
+    aspect-ratio: 1 !important;
+    min-height: auto !important;
   }
 
   .work-list-item {
