@@ -112,7 +112,7 @@ function initEventListeners() {
 
   // ページ更新ボタン
   document.getElementById('refresh-btn').addEventListener('click', () => {
-    window.location.reload();
+    window.location.replace(window.location.pathname + '?t=' + Date.now());
   });
 
   // 下部フローティングタブバーの切り替え
