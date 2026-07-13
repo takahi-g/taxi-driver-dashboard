@@ -1,6 +1,5 @@
 // アプリケーションの状態管理
 let records = [];
-let earningsChart = null;
 let calendarDate = new Date();
 let showWorkOnly = false;
 
@@ -129,11 +128,6 @@ function initEventListeners() {
       const activePane = document.getElementById(tab.dataset.pane);
       if (activePane) {
         activePane.classList.remove('pane-hidden');
-      }
-
-      // 集計タブに切り替えた場合はグラフを再描画してレスポンシブ崩れを防ぐ
-      if (tab.dataset.pane === 'pane-dashboard') {
-        setTimeout(updateChart, 50);
       }
     });
   });
