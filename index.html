@@ -21,13 +21,13 @@
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.321.0/dist/umd/lucide.min.js"></script>
   
   <!-- スタイルシートの読み込み (キャッシュ対策用パラメータ付与) -->
-  <link rel="stylesheet" href="style.css?v=2026.07.13.1775">
+  <link rel="stylesheet" href="style.css?v=2026.07.13.1785">
 </head>
 <body>
   <div class="app-container">
     <!-- トップバー (バージョン & 更新ボタン) -->
     <div class="top-bar">
-      <span class="version-badge">v2026.07.13.1775</span>
+      <span class="version-badge">v2026.07.13.1785</span>
       <button id="refresh-btn" class="btn-icon" title="ページを更新"><i data-lucide="refresh-cw"></i></button>
     </div>
 
@@ -165,6 +165,25 @@
             </div>
           </div>
         </section>
+
+        <!-- データバックアップセクション -->
+        <section class="settings-section card">
+          <div class="card-header">
+            <h2><i data-lucide="database"></i> バックアップ</h2>
+          </div>
+          <div class="settings-list" style="display: flex; flex-direction: column; gap: 1rem; padding: 0.5rem 0;">
+            <p class="settings-desc" style="line-height: 1.45;">アプリを削除するとデータが消えるため、定期的にバックアップを保存してください。</p>
+            <div style="display: flex; gap: 0.75rem; width: 100%;">
+              <button id="export-btn" class="btn btn-secondary" style="flex: 1; justify-content: center; height: 48px;">
+                <i data-lucide="download"></i> 保存する
+              </button>
+              <button id="import-trigger-btn" class="btn btn-secondary" style="flex: 1; justify-content: center; height: 48px;">
+                <i data-lucide="upload"></i> 復元する
+              </button>
+              <input type="file" id="import-file-input" accept=".json" style="display: none;">
+            </div>
+          </div>
+        </section>
       </div>
     </main>
 
@@ -228,6 +247,6 @@
   </div>
 
   <!-- アプリケーションコードの読み込み (キャッシュ対策用パラメータ付与) -->
-  <script src="app.js?v=2026.07.13.1775"></script>
+  <script src="app.js?v=2026.07.13.1785"></script>
 </body>
 </html>

@@ -140,8 +140,22 @@ function initEventListeners() {
     workOnlyCheckbox.addEventListener('change', function() {
       state.showWorkOnly = this.checked;
       localStorage.setItem('taxi_show_work_only', state.showWorkOnly);
-      renderWorkList();
     });
+  }
+
+  // バックアップ・復元ボタンのイベント登録
+  const exportBtn = document.getElementById('export-btn');
+  const importTriggerBtn = document.getElementById('import-trigger-btn');
+  const importFileInput = document.getElementById('import-file-input');
+
+  if (exportBtn) {
+    exportBtn.addEventListener('click', exportData);
+  }
+  if (importTriggerBtn && importFileInput) {
+    importTriggerBtn.addEventListener('click', () => {
+      importFileInput.click();
+    });
+    importFileInput.addEventListener('change', importData);
   }
 }
 
@@ -230,6 +244,77 @@ function loadRecords() {
 // LocalStorage へ保存
 function saveRecords() {
   localStorage.setItem('taxi_dashboard_records', JSON.stringify(state.records));
+}
+
+// バックアップデータをエクスポート (JSONダウンロード)
+function exportData() {
+  if (state.records.length === 0) {
+    alert('保存されているデータがありません。');
+    return;
+  }
+  
+  try {
+    const dataStr = JSON.stringify(state.records, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    
+    const dateStr = new Date().toISOString().split('T')[0];
+    const exportFileDefaultName = `taxi_backup_${dateStr}.json`;
+    
+    const linkElement = document.createElement('a');
+    linkElement.href = url;
+    linkElement.download = exportFileDefaultName;
+    document.body.appendChild(linkElement);
+    linkElement.click();
+    document.body.removeChild(linkElement);
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    alert('データのバックアップに失敗しました。');
+  }
+}
+
+// バックアップデータをインポート (JSONアップロード)
+function importData(e) {
+  const fileReader = new FileReader();
+  fileReader.onload = function (event) {
+    try {
+      const parsed = JSON.parse(event.target.result);
+      if (Array.isArray(parsed)) {
+        // インポートデータのサニタイズと復元
+        const importedRecords = parsed.map(r => ({
+          id: r.id || Date.now().toString() + Math.random().toString(36).substring(2, 5),
+          date: r.date || new Date().toISOString().split('T')[0],
+          startTime: r.startTime || '',
+          endTime: r.endTime || '',
+          hours: (r.hours !== undefined && r.hours !== null && !isNaN(r.hours)) ? Number(r.hours) : 0,
+          earnings: (r.earnings !== undefined && r.earnings !== null && !isNaN(r.earnings)) ? Number(r.earnings) : 0,
+          tips: (r.tips !== undefined && r.tips !== null && !isNaN(r.tips)) ? Number(r.tips) : 0
+        }));
+
+        if (importedRecords.length === 0) {
+          alert('復元するデータが見つかりませんでした。');
+          return;
+        }
+
+        const confirmMsg = `${importedRecords.length} 件のデータを復元しますか？\n(注: 現在保存されているデータはすべて上書きされます)`;
+        if (confirm(confirmMsg)) {
+          state.records = importedRecords;
+          sortRecords();
+          saveRecords();
+          updateUI();
+          alert('データの復元が正常に完了しました！');
+        }
+      } else {
+        alert('無効なバックアップファイル形式です。');
+      }
+    } catch (error) {
+      alert('ファイルの解析中にエラーが発生しました。ファイルが破損している可能性があります。');
+    }
+  };
+
+  if (e.target.files[0]) {
+    fileReader.readAsText(e.target.files[0]);
+  }
 }
 
 // レコードを日付順に文字列ソート
