@@ -94,7 +94,7 @@ function initEventListeners() {
     closeModal();
 
     // 登録完了時に自動的にカレンダー（出勤リスト）タブに切り替えて変更を確認できるようにする
-    const calendarTab = document.querySelector('.tab-btn[data-pane="pane-calendar"]');
+    const calendarTab = document.querySelector('.tab-item[data-pane="pane-calendar"]');
     if (calendarTab) {
       calendarTab.click();
     }
@@ -116,8 +116,8 @@ function initEventListeners() {
     window.location.reload();
   });
 
-  // 上部タブバーの切り替え
-  const tabs = document.querySelectorAll('.tab-btn');
+  // 下部フローティングタブバーの切り替え
+  const tabs = document.querySelectorAll('.tab-item');
   const panes = document.querySelectorAll('.tab-pane');
 
   tabs.forEach(tab => {

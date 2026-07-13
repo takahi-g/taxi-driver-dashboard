@@ -19,7 +19,7 @@
   <div class="app-container">
     <!-- トップバー (バージョン & 更新ボタン) -->
     <div class="top-bar">
-      <span class="version-badge">v2026.07.13.1400</span>
+      <span class="version-badge">v2026.07.13.1405</span>
       <button id="refresh-btn" class="btn-icon" title="ページを更新"><i data-lucide="refresh-cw"></i></button>
     </div>
 
@@ -40,19 +40,6 @@
         </button>
       </div>
     </header>
-
-    <!-- 上部タブバー -->
-    <div class="top-tab-bar" id="top-tab-bar">
-      <button class="tab-btn active" data-pane="pane-calendar">
-        <i data-lucide="calendar"></i> カレンダー
-      </button>
-      <button class="tab-btn" data-pane="pane-dashboard">
-        <i data-lucide="layout-dashboard"></i> 集計
-      </button>
-      <button class="tab-btn" data-pane="pane-settings">
-        <i data-lucide="settings"></i> 設定
-      </button>
-    </div>
 
     <!-- メインコンテンツ -->
     <main class="main-content">
@@ -253,6 +240,22 @@
         </form>
       </div>
     </div>
+
+    <!-- 浮かせるカプセル型下部ナビゲーションバー -->
+    <nav class="tab-bar" id="tab-bar">
+      <button class="tab-item active" data-pane="pane-calendar">
+        <i data-lucide="calendar"></i>
+        <span>カレンダー</span>
+      </button>
+      <button class="tab-item" data-pane="pane-dashboard">
+        <i data-lucide="layout-dashboard"></i>
+        <span>集計</span>
+      </button>
+      <button class="tab-item" data-pane="pane-settings">
+        <i data-lucide="settings"></i>
+        <span>設定</span>
+      </button>
+    </nav>
   </div>
 
   <script src="app.js"></script>
