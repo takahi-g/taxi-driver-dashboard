@@ -213,9 +213,13 @@ function updateMetrics() {
   let totalTips = 0;
 
   records.forEach(r => {
-    totalHours += r.hours;
-    totalEarnings += r.earnings;
-    totalTips += r.tips;
+    const hours = (r.hours !== undefined && r.hours !== null && !isNaN(r.hours)) ? Number(r.hours) : 0;
+    const earnings = (r.earnings !== undefined && r.earnings !== null && !isNaN(r.earnings)) ? Number(r.earnings) : 0;
+    const tips = (r.tips !== undefined && r.tips !== null && !isNaN(r.tips)) ? Number(r.tips) : 0;
+
+    totalHours += hours;
+    totalEarnings += earnings;
+    totalTips += tips;
   });
 
   // 売上のみでの平均時間売上計算（チップを含めない）
@@ -291,12 +295,15 @@ function updateHistoryAccordion() {
       const infoEl = document.createElement('div');
       infoEl.className = 'accordion-item-info';
       
-      const formattedDate = formatDate(r.date);
+      const hoursVal = (r.hours !== undefined && r.hours !== null && !isNaN(r.hours)) ? Number(r.hours) : 0;
+      const earningsVal = (r.earnings !== undefined && r.earnings !== null && !isNaN(r.earnings)) ? Number(r.earnings) : 0;
+      const tipsVal = (r.tips !== undefined && r.tips !== null && !isNaN(r.tips)) ? Number(r.tips) : 0;
+
       infoEl.innerHTML = `
         <span class="acc-date">${formattedDate}</span>
-        <span class="acc-hours">${r.hours.toFixed(1)}h</span>
-        <span class="acc-earnings">¥${r.earnings.toLocaleString()}</span>
-        <span class="acc-tips">C${r.tips.toLocaleString()}</span>
+        <span class="acc-hours">${hoursVal.toFixed(1)}h</span>
+        <span class="acc-earnings">¥${earningsVal.toLocaleString()}</span>
+        <span class="acc-tips">C${tipsVal.toLocaleString()}</span>
       `;
 
       const actionsEl = document.createElement('div');
@@ -456,9 +463,12 @@ function createWorkListItem(dayNum, weekdayStr, dayIndex, dateStr, isToday, hasW
     let dayTips = 0;
 
     dayRecords.forEach(r => {
-      dayHours += r.hours;
-      dayEarnings += r.earnings;
-      dayTips += r.tips;
+      const hours = (r.hours !== undefined && r.hours !== null && !isNaN(r.hours)) ? Number(r.hours) : 0;
+      const earnings = (r.earnings !== undefined && r.earnings !== null && !isNaN(r.earnings)) ? Number(r.earnings) : 0;
+      const tips = (r.tips !== undefined && r.tips !== null && !isNaN(r.tips)) ? Number(r.tips) : 0;
+      dayHours += hours;
+      dayEarnings += earnings;
+      dayTips += tips;
     });
 
     const infoEl = document.createElement('div');
