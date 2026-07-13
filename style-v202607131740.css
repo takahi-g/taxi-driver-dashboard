@@ -904,27 +904,26 @@ input:checked + .slider:before {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   z-index: 2500; /* 下部ナビゲーションより常に前面に表示 */
-  justify-content: center;
-  align-items: center;
-  padding: 1rem;
+  overflow-y: auto; /* モーダル全体をスクロール可能にしてiOSのキーボードバグを防ぐ */
+  -webkit-overflow-scrolling: touch;
+  padding: 2rem 1rem; /* 上下に広い余白 */
 }
 
 .modal.show {
-  display: flex;
+  display: block; /* flexからblockに変更してiOSでのガタつきを防止 */
 }
 
 .modal-content {
-  width: calc(100% - 1.5rem);
-  max-width: 460px;
+  width: 100%; /* 横幅はpadding分を引いた100%（絶対に見切れない） */
+  max-width: 440px;
   background: var(--bg-surface-solid);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 1.75rem;
   box-shadow: 0 24px 48px rgba(0, 0, 0, 0.6);
-  max-height: 85vh; /* キーボード表示時にも画面外にはみ出ないように制限 */
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  animation: modalFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin: 5vh auto; /* margin auto で水平センタリング、かつ上部に余白 */
+  position: relative;
+  animation: modalFadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes modalFadeIn {
