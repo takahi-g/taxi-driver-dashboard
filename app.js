@@ -203,8 +203,7 @@ function deleteRecord(id) {
 // UIの全体更新
 function updateUI() {
   updateMetrics();
-  updateTable();
-  updateChart();
+  updateHistoryAccordion();
   renderWorkList();
   renderInputCalendar();
   
@@ -225,9 +224,8 @@ function updateMetrics() {
     totalTips += r.tips;
   });
 
-  // 合算額での平均時給計算
-  const totalCombined = totalEarnings + totalTips;
-  const averageHourly = totalHours > 0 ? Math.round(totalCombined / totalHours) : 0;
+  // 売上のみでの平均時間売上計算（チップを含めない）
+  const averageHourly = totalHours > 0 ? Math.round(totalEarnings / totalHours) : 0;
 
   // 各要素への書き込み
   document.getElementById('val-days').innerHTML = `${totalDays} <span class="unit">日</span>`;
@@ -238,160 +236,104 @@ function updateMetrics() {
   document.getElementById('record-count').innerText = `${totalDays} 件の記録`;
 }
 
-// テーブル履歴の描画
-function updateTable() {
-  const tbody = document.getElementById('history-tbody');
-  
+// 月別アコーディオン履歴の描画
+function updateHistoryAccordion() {
+  const container = document.getElementById('history-accordion');
+  if (!container) return;
+  container.innerHTML = '';
+
   if (records.length === 0) {
-    tbody.innerHTML = `
-      <tr class="empty-state">
-        <td colspan="7">
-          <div class="empty-message">
-            <i data-lucide="inbox"></i>
-            <p>勤務記録がありません。「勤務を記録する」ボタンから登録してください。</p>
-          </div>
-        </td>
-      </tr>
+    container.innerHTML = `
+      <div class="empty-message">
+        <i data-lucide="inbox"></i>
+        <p>勤務記録がありません。設定カレンダーの日付をタップして登録してください。</p>
+      </div>
     `;
+    document.getElementById('record-count').innerText = '0 件の記録';
     return;
   }
 
-  tbody.innerHTML = '';
-  
-  // 最新の履歴が上に来るように逆順でループ
-  [...records].reverse().forEach(r => {
-    const tr = document.createElement('tr');
-    
-    const formattedDate = formatDate(r.date);
-    const combinedTotal = r.earnings + r.tips;
+  document.getElementById('record-count').innerText = `${records.length} 件の記録`;
 
-    tr.innerHTML = `
-      <td>${formattedDate}</td>
-      <td>${r.startTime} 〜 ${r.endTime}</td>
-      <td>${r.hours} 時間</td>
-      <td>¥${r.earnings.toLocaleString()}</td>
-      <td class="text-accent">¥${r.tips.toLocaleString()}</td>
-      <td class="total-amount">¥${combinedTotal.toLocaleString()}</td>
-      <td>
-        <button class="btn-danger-icon" onclick="deleteRecord('${r.id}')" title="削除">
+  // 月ごとにグループ化
+  const grouped = {};
+  records.forEach(r => {
+    const d = new Date(r.date);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(r);
+  });
+
+  // 月を新しい順にソート
+  const sortedKeys = Object.keys(grouped).sort().reverse();
+
+  sortedKeys.forEach(key => {
+    const [y, m] = key.split('-');
+    const monthRecords = grouped[key];
+
+    const section = document.createElement('div');
+    section.className = 'accordion-section';
+
+    // ヘッダー（タップで開閉）
+    const header = document.createElement('div');
+    header.className = 'accordion-header';
+    header.innerHTML = `
+      <span class="accordion-title"><i data-lucide="calendar"></i> ${parseInt(m)}月 (${monthRecords.length}件)</span>
+      <i data-lucide="chevron-down" class="accordion-chevron"></i>
+    `;
+    header.addEventListener('click', () => {
+      section.classList.toggle('open');
+    });
+
+    // コンテンツ（各レコード）
+    const content = document.createElement('div');
+    content.className = 'accordion-content';
+
+    // 新しい日付順
+    [...monthRecords].reverse().forEach(r => {
+      const item = document.createElement('div');
+      item.className = 'accordion-item';
+
+      const infoEl = document.createElement('div');
+      infoEl.className = 'accordion-item-info';
+      
+      const formattedDate = formatDate(r.date);
+      infoEl.innerHTML = `
+        <span class="acc-date">${formattedDate}</span>
+        <span class="acc-hours">${r.hours.toFixed(1)}h</span>
+        <span class="acc-earnings">¥${r.earnings.toLocaleString()}</span>
+        <span class="acc-tips">C${r.tips.toLocaleString()}</span>
+      `;
+
+      const actionsEl = document.createElement('div');
+      actionsEl.className = 'accordion-item-actions';
+      actionsEl.innerHTML = `
+        <button class="btn-edit-icon" title="編集">
+          <i data-lucide="pencil"></i>
+        </button>
+        <button class="btn-danger-icon" title="削除">
           <i data-lucide="trash-2"></i>
         </button>
-      </td>
-    `;
-    
-    tbody.appendChild(tr);
-  });
-}
+      `;
+      // 編集ボタン
+      actionsEl.querySelector('.btn-edit-icon').addEventListener('click', (e) => {
+        e.stopPropagation();
+        openModalWithDate(r.date);
+      });
+      // 削除ボタン
+      actionsEl.querySelector('.btn-danger-icon').addEventListener('click', (e) => {
+        e.stopPropagation();
+        deleteRecord(r.id);
+      });
 
-// 日付フォーマットの変換 (YYYY-MM-DD -> MM/DD (曜日))
-function formatDate(dateStr) {
-  const date = new Date(dateStr);
-  if (isNaN(date)) return dateStr;
-  const days = ['日', '月', '火', '水', '木', '金', '土'];
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  const dayName = days[date.getDay()];
-  return `${month}/${day} (${dayName})`;
-}
+      item.appendChild(infoEl);
+      item.appendChild(actionsEl);
+      content.appendChild(item);
+    });
 
-// グラフ (Chart.js) の更新
-function updateChart() {
-  const ctx = document.getElementById('earningsChart').getContext('2d');
-  
-  // 過去最大10件の記録をグラフに表示
-  const chartData = records.slice(-10);
-
-  const labels = chartData.map(r => formatDate(r.date));
-  const earningsData = chartData.map(r => r.earnings);
-  const tipsData = chartData.map(r => r.tips);
-
-  if (earningsChart) {
-    earningsChart.destroy();
-  }
-
-  // グラフオプション (プレミアムダークテーマ用カスタマイズ)
-  earningsChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: '売上金額',
-          data: earningsData,
-          backgroundColor: '#f5b041',
-          borderColor: '#f5b041',
-          borderRadius: 6,
-          borderSkipped: false
-        },
-        {
-          label: 'チップ額',
-          data: tipsData,
-          backgroundColor: '#00f2fe',
-          borderColor: '#00f2fe',
-          borderRadius: 6,
-          borderSkipped: false
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: false // カスタム凡例を使用するため非表示
-        },
-        tooltip: {
-          mode: 'index',
-          intersect: false,
-          backgroundColor: '#161c2d',
-          titleColor: '#fff',
-          bodyColor: '#f3f4f6',
-          borderColor: 'rgba(255, 255, 255, 0.08)',
-          borderWidth: 1,
-          callbacks: {
-            label: function(context) {
-              let label = context.dataset.label || '';
-              if (label) {
-                label += ': ';
-              }
-              if (context.parsed.y !== null) {
-                label += '¥' + context.parsed.y.toLocaleString();
-              }
-              return label;
-            }
-          }
-        }
-      },
-      scales: {
-        x: {
-          stacked: true,
-          grid: {
-            display: false
-          },
-          ticks: {
-            color: '#9ca3af',
-            font: {
-              family: 'Outfit, Noto Sans JP'
-            }
-          }
-        },
-        y: {
-          stacked: true,
-          grid: {
-            color: 'rgba(255, 255, 255, 0.08)'
-          },
-          ticks: {
-            color: '#9ca3af',
-            font: {
-              family: 'Outfit, Noto Sans JP'
-            },
-            callback: function(value) {
-              return '¥' + value.toLocaleString();
-            }
-          }
-        }
-      }
-    }
+    section.appendChild(header);
+    section.appendChild(content);
+    container.appendChild(section);
   });
 }
 
@@ -595,13 +537,13 @@ function toggleWorkDate(dateStr) {
     // すでに登録があれば削除する（オフ）
     records.splice(existingIndex, 1);
   } else {
-    // 登録がなければ、フォームにある前回の入力値を取得して自動登録（オン）
-    const startTime = document.getElementById('input-start-time').value || '08:00';
-    const endTime = document.getElementById('input-end-time').value || '17:00';
+    // 登録がなければ、デフォルト値で自動登録（オン）。時間は0
+    const startTime = document.getElementById('input-start-time').value || '';
+    const endTime = document.getElementById('input-end-time').value || '';
     const earnings = parseInt(document.getElementById('input-earnings').value, 10) || 0;
     const tips = parseInt(document.getElementById('input-tips').value, 10) || 0;
     
-    const hours = calculateHours(startTime, endTime);
+    const hours = (startTime && endTime) ? calculateHours(startTime, endTime) : 0;
     
     const newRecord = {
       id: Date.now().toString(),

@@ -16,22 +16,19 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="style-v2.css?v=2026.07.13.1420">
+  <link rel="stylesheet" href="style-v2.css?v=2026.07.13.1425">
 </head>
 <body>
   <div class="app-container">
     <!-- トップバー (バージョン & 更新ボタン) -->
     <div class="top-bar">
-      <span class="version-badge">v2026.07.13.1420</span>
+      <span class="version-badge">v2026.07.13.1425</span>
       <button id="refresh-btn" class="btn-icon" title="ページを更新"><i data-lucide="refresh-cw"></i></button>
     </div>
 
     <!-- サイドバー / ヘッダー -->
     <header class="main-header">
       <div class="logo-area">
-        <div class="logo-icon">
-          <i data-lucide="cab"></i>
-        </div>
         <div>
           <h1>Taxi Dashboard</h1>
           <p class="subtitle">Driver Performance & Earnings Tracker</p>
@@ -97,59 +94,20 @@
           <div class="summary-card text-info" id="card-hourly">
             <div class="card-icon"><i data-lucide="trending-up"></i></div>
             <div class="card-data">
-              <span class="card-label">平均時給 (売上+チップ)</span>
+              <span class="card-label">平均時間売上</span>
               <span class="card-value" id="val-hourly">¥0<span class="unit">/h</span></span>
             </div>
           </div>
         </section>
 
-        <!-- グラフ & 統計 -->
-        <section class="charts-section">
-          <div class="chart-container card">
-            <div class="card-header">
-              <h2><i data-lucide="bar-chart-3"></i> 日別売上・チップ推移</h2>
-              <div class="chart-legend">
-                <span class="legend-item"><span class="legend-color bg-primary"></span>売上</span>
-                <span class="legend-item"><span class="legend-color bg-accent"></span>チップ</span>
-              </div>
-            </div>
-            <div class="chart-wrapper">
-              <canvas id="earningsChart"></canvas>
-            </div>
-          </div>
-        </section>
-
-        <!-- 履歴テーブル -->
+        <!-- 勤務履歴（月別アコーディオン） -->
         <section class="history-section card">
           <div class="card-header">
             <h2><i data-lucide="history"></i> 勤務履歴</h2>
             <span class="badge" id="record-count">0 件の記録</span>
           </div>
-          <div class="table-wrapper">
-            <table class="history-table">
-              <thead>
-                <tr>
-                  <th>日付</th>
-                  <th>時間</th>
-                  <th>勤務時間</th>
-                  <th>売上金額</th>
-                  <th>チップ</th>
-                  <th>合計獲得額</th>
-                  <th>操作</th>
-                </tr>
-              </thead>
-              <tbody id="history-tbody">
-                <!-- JSで動的に追加されます -->
-                <tr class="empty-state">
-                  <td colspan="7">
-                    <div class="empty-message">
-                      <i data-lucide="inbox"></i>
-                      <p>勤務記録がありません。設定カレンダーの日付をタップして登録してください。</p>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div id="history-accordion" class="history-accordion">
+            <!-- JSで動的に追加されます -->
           </div>
         </section>
       </div>

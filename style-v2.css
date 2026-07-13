@@ -755,6 +755,143 @@ input:checked + .slider:before {
   opacity: 0.5;
 }
 
+/* アコーディオン履歴 */
+.history-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.accordion-section {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.accordion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 1.25rem;
+  background-color: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  user-select: none;
+}
+
+.accordion-header:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.accordion-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #3498db;
+}
+
+.accordion-title i {
+  width: 18px;
+  height: 18px;
+}
+
+.accordion-chevron {
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+  transition: transform 0.3s ease;
+}
+
+.accordion-section.open .accordion-chevron {
+  transform: rotate(180deg);
+}
+
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+
+.accordion-section.open .accordion-content {
+  max-height: 2000px;
+}
+
+.accordion-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.7rem 1.25rem;
+  border-top: 1px solid var(--border-color);
+  transition: var(--transition-smooth);
+}
+
+.accordion-item:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.accordion-item-info {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  white-space: nowrap;
+}
+
+.acc-date {
+  font-weight: 700;
+  color: #3498db;
+  font-size: 0.95rem;
+}
+
+.acc-hours {
+  font-weight: 600;
+  color: #e67e22;
+  background-color: rgba(230, 126, 34, 0.15);
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+}
+
+.acc-earnings {
+  font-weight: 700;
+  color: #f1c40f;
+  font-size: 0.95rem;
+}
+
+.acc-tips {
+  font-weight: 600;
+  color: #ffffff;
+  font-size: 0.9rem;
+}
+
+.accordion-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.btn-edit-icon {
+  background: none;
+  border: none;
+  color: #3498db;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-smooth);
+}
+
+.btn-edit-icon:hover {
+  background-color: rgba(52, 152, 219, 0.15);
+  color: #2980b9;
+}
+
+.btn-edit-icon i {
+  width: 16px;
+  height: 16px;
+}
+
 /* モーダル */
 .modal {
   display: none;
