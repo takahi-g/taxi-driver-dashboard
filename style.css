@@ -305,25 +305,33 @@ body {
   background-color: rgba(245, 176, 65, 0.04);
 }
 
-/* 文字色の統一 (日付＝青, 時間＝オレンジ, 売上＝黄, チップ＝白) */
+/* 文字色の統一 (日付＝平日白, 土曜＝青, 日曜祝日＝赤) & 全体的なフォントサイズ拡大 */
 .work-list-item .day-number {
-  font-size: 1.2rem;
+  font-size: 1.35rem;         /* 1.2rem から 1.35rem へ拡大 */
   font-weight: 700;
-  color: var(--color-req-date);
+  color: #ffffff;            /* 平日: 白 */
   flex-shrink: 0;
+}
+
+.work-list-item .day-number.sun {
+  color: #fc8181;            /* 日曜・祝日: 赤 */
+}
+
+.work-list-item .day-number.sat {
+  color: #63b3ed;            /* 土曜: 水色 */
 }
 
 .work-list-item .day-info {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1.25rem;              /* 隙間を微調整 */
   flex-shrink: 0;
   white-space: nowrap;
 }
 
 .work-list-item .day-hours {
-  font-size: 0.95rem;
+  font-size: 1.1rem;         /* 0.95rem から 1.1rem へ拡大 */
   color: var(--color-req-hours);
   font-weight: 700;
   background-color: rgba(230, 126, 34, 0.15);
@@ -332,13 +340,13 @@ body {
 }
 
 .work-list-item .day-earnings {
-  font-size: 0.95rem;
+  font-size: 1.15rem;        /* 0.95rem から 1.15rem へ拡大 */
   font-weight: 700;
   color: var(--color-req-earnings);
 }
 
 .work-list-item .day-tips {
-  font-size: 0.95rem;
+  font-size: 1.1rem;         /* 0.95rem から 1.1rem へ拡大 */
   font-weight: 600;
   color: var(--color-req-tips);
 }
@@ -965,27 +973,27 @@ input:focus {
   }
   
   .work-list-item {
-    padding: 0.65rem 1rem;
-    min-height: 48px;
-    gap: 1rem;
+    padding: 0.8rem 1rem;      /* タップ領域と余白の拡大 */
+    min-height: 52px;
+    gap: 0.8rem;
   }
   
   .work-list-item .day-number {
-    font-size: 1.15rem;
+    font-size: 1.25rem;        /* 1.15rem から 1.25rem へ拡大 */
   }
   
   .work-list-item .day-info {
-    gap: 0.75rem;
+    gap: 0.7rem;               /* 横幅を節約するための隙間調整 */
   }
   
   .work-list-item .day-hours {
-    font-size: 0.85rem;
+    font-size: 1.0rem;         /* 0.85rem から 1.0rem へ拡大 */
     padding: 0.15rem 0.35rem;
   }
   
   .work-list-item .day-earnings, 
   .work-list-item .day-tips {
-    font-size: 0.85rem;
+    font-size: 1.05rem;        /* 0.85rem から 1.05rem へ拡大 */
   }
 
   /* モバイル画面用：アコーディオン勤務履歴の見切れ防止 */

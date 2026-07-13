@@ -189,7 +189,57 @@ function formatDateStr(year, month, day) {
   const m = String(d.getMonth() + 1).padStart(2, '0');
   const dateVal = String(d.getDate()).padStart(2, '0');
   return `${y}-${m}-${dateVal}`;
+// 日本の祝日判定 (2025〜2027年対応の簡易・正確な判定)
+function isHoliday(year, month, day) {
+  // ハッピーマンデー（成人の日: 1月第2月曜, 海の日: 7月第3月曜, 敬老の日: 9月第3月曜, スポーツの日: 10月第2月曜）の計算
+  const getHappyMonday = (y, m, weekNumber) => {
+    const firstDay = new Date(y, m - 1, 1).getDay();
+    let dayOfMon = 1 + (7 - firstDay + 1) % 7 + (weekNumber - 1) * 7;
+    return dayOfMon;
+  };
+
+  // 春分の日 (2025-2027年はすべて3/20)
+  const getVernalEquinox = (y) => 20;
+  // 秋分の日 (2025, 2026年は9/23、2027年は9/22)
+  const getAutumnalEquinox = (y) => {
+    if (y === 2027) return 22;
+    return 23;
+  };
+
+  // 固定祝日
+  if (month === 1 && day === 1) return true; // 元日
+  if (month === 2 && day === 11) return true; // 建国記念の日
+  if (month === 2 && day === 23) return true; // 天皇誕生日
+  if (month === 3 && day === getVernalEquinox(year)) return true; // 春分の日
+  if (month === 4 && day === 29) return true; // 昭和の日
+  if (month === 5 && day === 3) return true; // 憲法記念日
+  if (month === 5 && day === 4) return true; // みどりの日
+  if (month === 5 && day === 5) return true; // こどもの日
+  if (month === 8 && day === 11) return true; // 山の日
+  if (month === 11 && day === 3) return true; // 文化の日
+  if (month === 11 && day === 23) return true; // 勤労感謝の日
+
+  // ハッピーマンデー
+  if (month === 1 && day === getHappyMonday(year, 1, 2)) return true; // 成人の日
+  if (month === 7 && day === getHappyMonday(year, 7, 3)) return true; // 海の日
+  if (month === 9 && day === getHappyMonday(year, 9, 3)) return true; // 敬老の日
+  if (month === 10 && day === getHappyMonday(year, 10, 2)) return true; // スポーツの日
+
+  if (month === 9 && day === getAutumnalEquinox(year)) return true; // 秋分の日
+
+  // 振替休日判定
+  if (month === 5 && day === 6 && [3, 4, 5].includes(new Date(year, 4, 3).getDay())) {
+    return true;
+  }
+  
+  const yesterday = new Date(year, month - 1, day - 1);
+  if (yesterday.getDay() === 0 && isHoliday(yesterday.getFullYear(), yesterday.getMonth() + 1, yesterday.getDate())) {
+    return true;
+  }
+
+  return false;
 }
+
 
 // 勤務時間の計算 (深夜またぎに対応し、一律で3時間休憩を引く)
 function calculateHours(start, end) {
@@ -523,8 +573,15 @@ function createWorkListItem(dayNum, weekdayStr, dayIndex, dateStr, isToday) {
 
   const numEl = document.createElement('span');
   numEl.className = 'day-number';
-  if (dayIndex === 0) numEl.classList.add('sun');
-  if (dayIndex === 6) numEl.classList.add('sat');
+  
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const isDayHoliday = isHoliday(y, m, d);
+
+  if (dayIndex === 0 || isDayHoliday) {
+    numEl.classList.add('sun');
+  } else if (dayIndex === 6) {
+    numEl.classList.add('sat');
+  }
   numEl.innerText = `${dayNum}(${weekdayStr})`;
   itemEl.appendChild(numEl);
 
@@ -625,8 +682,15 @@ function createDayCell(dayNum, weekdayStr, dayIndex, dateStr, isToday) {
 
   const numEl = document.createElement('span');
   numEl.className = 'day-number';
-  if (dayIndex === 0) numEl.classList.add('sun');
-  if (dayIndex === 6) numEl.classList.add('sat');
+  
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const isDayHoliday = isHoliday(y, m, d);
+
+  if (dayIndex === 0 || isDayHoliday) {
+    numEl.classList.add('sun');
+  } else if (dayIndex === 6) {
+    numEl.classList.add('sat');
+  }
   numEl.innerText = dayNum;
   dayEl.appendChild(numEl);
 
