@@ -33,7 +33,7 @@ function initEventListeners() {
 
   const closeModal = () => {
     recordModal.classList.remove('show');
-    recordForm.reset();
+    // フォームの値をリセットせず前回の入力を保持（日付のみ今日のデフォルトに戻す）
     document.getElementById('input-date').value = today;
   };
 
