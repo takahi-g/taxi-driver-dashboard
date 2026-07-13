@@ -86,7 +86,7 @@ function initEventListeners() {
     }
 
     // 日付順にソート
-    records.sort((a, b) => new Date(a.date) - new Date(b.date));
+    records.sort((a, b) => a.date.localeCompare(b.date));
 
     saveRecords();
     updateUI();
@@ -172,7 +172,7 @@ function loadRecords() {
     try {
       records = JSON.parse(stored);
       // 日付順にソート
-      records.sort((a, b) => new Date(a.date) - new Date(b.date));
+      records.sort((a, b) => a.date.localeCompare(b.date));
     } catch (e) {
       console.error("データの読み込みに失敗しました:", e);
       records = [];
@@ -256,8 +256,7 @@ function updateHistoryAccordion() {
   // 月ごとにグループ化
   const grouped = {};
   records.forEach(r => {
-    const d = new Date(r.date);
-    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    const key = r.date.substring(0, 7); // "YYYY-MM" を文字列で安全に取得
     if (!grouped[key]) grouped[key] = [];
     grouped[key].push(r);
   });
@@ -372,10 +371,8 @@ function renderWorkList() {
   }
 
   // バッジ件数更新
-  const workDaysCount = records.filter(r => {
-    const d = new Date(r.date);
-    return d.getFullYear() === year && d.getMonth() === month;
-  }).length;
+  const targetPrefix = `${year}-${String(month + 1).padStart(2, '0')}`;
+  const workDaysCount = records.filter(r => r.date.startsWith(targetPrefix)).length;
   document.getElementById('work-days-count').innerText = `${workDaysCount} 日出勤`;
 
   if (renderedCount === 0) {
@@ -435,6 +432,21 @@ function formatDateStr(year, month, day) {
   const m = String(d.getMonth() + 1).padStart(2, '0');
   const dateVal = String(d.getDate()).padStart(2, '0');
   return `${y}-${m}-${dateVal}`;
+}
+
+// すべてのブラウザ（iOS含む）で100%安全に動作する日付フォーマット変換関数
+function formatDate(dateStr) {
+  const parts = dateStr.split('-');
+  if (parts.length === 3) {
+    const y = parseInt(parts[0], 10);
+    const m = parseInt(parts[1], 10);
+    const d = parseInt(parts[2], 10);
+    const dateObj = new Date(y, m - 1, d);
+    const days = ['日', '月', '火', '水', '木', '金', '土'];
+    const dayName = days[dateObj.getDay()];
+    return `${m}/${d} (${dayName})`;
+  }
+  return dateStr;
 }
 
 // 出勤リスト用の1列アイテム要素を作成
@@ -564,7 +576,7 @@ function toggleWorkDate(dateStr) {
   }
   
   // 日付順にソート
-  records.sort((a, b) => new Date(a.date) - new Date(b.date));
+  records.sort((a, b) => a.date.localeCompare(b.date));
   
   saveRecords();
   updateUI();
