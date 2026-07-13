@@ -415,19 +415,19 @@ function createDayCell(dayNum, weekdayStr, dayIndex, dateStr, isToday = false) {
     // 勤務時間
     const hoursEl = document.createElement('span');
     hoursEl.className = 'day-hours';
-    hoursEl.innerText = `${dayHours.toFixed(1)} 時間`;
+    hoursEl.innerText = `${dayHours.toFixed(1)}h`;
     infoEl.appendChild(hoursEl);
 
     // 売上
     const earningsEl = document.createElement('span');
     earningsEl.className = 'day-earnings';
-    earningsEl.innerText = `売上: ¥${dayEarnings.toLocaleString()}`;
+    earningsEl.innerText = `¥${dayEarnings.toLocaleString()}`;
     infoEl.appendChild(earningsEl);
 
     // チップ
     const tipsEl = document.createElement('span');
     tipsEl.className = 'day-tips';
-    tipsEl.innerText = `チップ: ¥${dayTips.toLocaleString()}`;
+    tipsEl.innerText = `C${dayTips.toLocaleString()}`;
     infoEl.appendChild(tipsEl);
 
     dayEl.appendChild(infoEl);
