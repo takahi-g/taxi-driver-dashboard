@@ -1,6 +1,7 @@
 // アプリケーションの状態管理
 let records = [];
 let earningsChart = null;
+let calendarDate = new Date();
 
 // DOMの読み込み完了時
 document.addEventListener('DOMContentLoaded', () => {
@@ -77,6 +78,17 @@ function initEventListeners() {
     updateUI();
     closeModal();
   });
+
+  // カレンダーコントロール
+  document.getElementById('prev-month-btn').addEventListener('click', () => {
+    calendarDate.setMonth(calendarDate.getMonth() - 1);
+    renderCalendar();
+  });
+
+  document.getElementById('next-month-btn').addEventListener('click', () => {
+    calendarDate.setMonth(calendarDate.getMonth() + 1);
+    renderCalendar();
+  });
 }
 
 // 勤務時間の計算 (開始・終了時間から時間数を算出。深夜またぎに対応)
@@ -129,6 +141,7 @@ function updateUI() {
   updateMetrics();
   updateTable();
   updateChart();
+  renderCalendar();
   
   // 動的に追加された要素のアイコンを再描画
   lucide.createIcons();
@@ -315,4 +328,121 @@ function updateChart() {
       }
     }
   });
+}
+
+// カレンダーの描画ロジック
+function renderCalendar() {
+  const year = calendarDate.getFullYear();
+  const month = calendarDate.getMonth();
+
+  // ラベル更新
+  document.getElementById('current-month-label').innerText = `${year}年 ${month + 1}月`;
+
+  const grid = document.getElementById('calendar-days-grid');
+  grid.innerHTML = '';
+
+  // その月の最初の日の曜日 (0:日, 1:月...)
+  const firstDayIndex = new Date(year, month, 1).getDay();
+  // その月の日数
+  const totalDays = new Date(year, month + 1, 0).getDate();
+  // 前月の日数
+  const prevTotalDays = new Date(year, month, 0).getDate();
+
+  // 前月分の日付を表示するセル
+  for (let i = firstDayIndex; i > 0; i--) {
+    const day = prevTotalDays - i + 1;
+    const dateStr = formatDateStr(year, month - 1, day);
+    const dayEl = createDayCell(day, dateStr, true);
+    grid.appendChild(dayEl);
+  }
+
+  // 当月分の日付セル
+  const todayStr = new Date().toISOString().split('T')[0];
+  for (let i = 1; i <= totalDays; i++) {
+    const dateStr = formatDateStr(year, month, i);
+    const isToday = dateStr === todayStr;
+    const dayEl = createDayCell(i, dateStr, false, isToday);
+    grid.appendChild(dayEl);
+  }
+
+  // 翌月分の日付セル（合計で42マスまたは7の倍数になるように調整）
+  const currentCells = firstDayIndex + totalDays;
+  const nextMonthCells = (7 - (currentCells % 7)) % 7;
+  for (let i = 1; i <= nextMonthCells; i++) {
+    const dateStr = formatDateStr(year, month + 1, i);
+    const dayEl = createDayCell(i, dateStr, true);
+    grid.appendChild(dayEl);
+  }
+}
+
+// YYYY-MM-DD 形式の日付文字列を生成 (月跨ぎに対応)
+function formatDateStr(year, month, day) {
+  const d = new Date(year, month, day);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const dateVal = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${dateVal}`;
+}
+
+// カレンダーのセル要素を作成
+function createDayCell(dayNum, dateStr, isOtherMonth, isToday = false) {
+  const dayEl = document.createElement('div');
+  dayEl.className = 'calendar-day';
+  if (isOtherMonth) dayEl.classList.add('other-month');
+  if (isToday) dayEl.classList.add('today');
+
+  // 日付の数字
+  const numEl = document.createElement('span');
+  numEl.className = 'day-number';
+  numEl.innerText = dayNum;
+  dayEl.appendChild(numEl);
+
+  // その日の勤務データを集計
+  const dayRecords = records.filter(r => r.date === dateStr);
+  if (dayRecords.length > 0) {
+    dayEl.classList.add('has-work');
+
+    let dayHours = 0;
+    let dayEarnings = 0;
+    let dayTips = 0;
+
+    dayRecords.forEach(r => {
+      dayHours += r.hours;
+      dayEarnings += r.earnings;
+      dayTips += r.tips;
+    });
+
+    const infoEl = document.createElement('div');
+    infoEl.className = 'day-info';
+
+    // 勤務時間
+    const hoursEl = document.createElement('span');
+    hoursEl.className = 'day-hours';
+    hoursEl.innerText = `${dayHours.toFixed(1)}h`;
+    infoEl.appendChild(hoursEl);
+
+    // 売上
+    const earningsEl = document.createElement('span');
+    earningsEl.className = 'day-earnings';
+    earningsEl.innerText = formatCurrencyAbbr(dayEarnings);
+    infoEl.appendChild(earningsEl);
+
+    // 合計獲得額 (売上 + チップ)
+    const totalEl = document.createElement('span');
+    totalEl.className = 'day-total';
+    totalEl.innerText = formatCurrencyAbbr(dayEarnings + dayTips);
+    infoEl.appendChild(totalEl);
+
+    dayEl.appendChild(infoEl);
+  }
+
+  return dayEl;
+}
+
+// 金額の略称フォーマット表記 (例: 35000 -> 3.5万)
+function formatCurrencyAbbr(amount) {
+  if (amount >= 10000) {
+    return `¥${(amount / 10000).toFixed(1)}万`;
+  }
+  return `¥${amount.toLocaleString()}`;
 }
