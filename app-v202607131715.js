@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateUI();
   
   // Lucideアイコンの初期化
-  lucide.createIcons();
+  initializeIcons();
 });
 
 // イベントリスナーの登録
@@ -202,7 +202,7 @@ function updateUI() {
   renderInputCalendar();
   
   // 動的に追加された要素のアイコンを再描画
-  lucide.createIcons();
+  initializeIcons();
 }
 
 // 主要数値の計算と表示
@@ -589,4 +589,14 @@ function openModalWithDate(dateStr) {
   }
 
   recordModal.classList.add('show');
+}
+
+// Lucideアイコンの非同期ロード待機＆初期化関数
+function initializeIcons() {
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  } else {
+    // ロードされるまで50msごとにリトライ
+    setTimeout(initializeIcons, 50);
+  }
 }
