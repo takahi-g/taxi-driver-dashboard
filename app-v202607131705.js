@@ -295,6 +295,7 @@ function updateHistoryAccordion() {
       const infoEl = document.createElement('div');
       infoEl.className = 'accordion-item-info';
       
+      const formattedDate = formatDate(r.date);
       const hoursVal = (r.hours !== undefined && r.hours !== null && !isNaN(r.hours)) ? Number(r.hours) : 0;
       const earningsVal = (r.earnings !== undefined && r.earnings !== null && !isNaN(r.earnings)) ? Number(r.earnings) : 0;
       const tipsVal = (r.tips !== undefined && r.tips !== null && !isNaN(r.tips)) ? Number(r.tips) : 0;
