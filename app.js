@@ -25,25 +25,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // イベントリスナーの登録
 function initEventListeners() {
-  const addRecordBtn = document.getElementById('add-record-btn');
   const recordModal = document.getElementById('record-modal');
   const closeModalBtn = document.getElementById('close-modal-btn');
   const cancelBtn = document.getElementById('cancel-btn');
   const recordForm = document.getElementById('record-form');
 
-  // 日付の初期値を今日に設定
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('input-date').value = today;
-
-  // モーダル開閉
-  addRecordBtn.addEventListener('click', () => {
-    recordModal.classList.add('show');
-  });
-
   const closeModal = () => {
     recordModal.classList.remove('show');
-    // フォームの値をリセットせず前回の入力を保持（日付のみ今日のデフォルトに戻す）
-    document.getElementById('input-date').value = today;
   };
 
   closeModalBtn.addEventListener('click', closeModal);
@@ -79,7 +67,15 @@ function initEventListeners() {
       tips
     };
 
-    records.push(newRecord);
+    // 同一日付の既存データがあれば上書き、なければ新規追加
+    const existingIndex = records.findIndex(r => r.date === date);
+    if (existingIndex !== -1) {
+      newRecord.id = records[existingIndex].id;
+      records[existingIndex] = newRecord;
+    } else {
+      records.push(newRecord);
+    }
+
     // 日付順にソート
     records.sort((a, b) => new Date(a.date) - new Date(b.date));
 
@@ -104,35 +100,37 @@ function initEventListeners() {
     window.location.reload();
   });
 
-  // カレンダー設定タブの切り替え
-  const tabCalendar = document.getElementById('tab-calendar');
-  const tabSettings = document.getElementById('tab-settings');
-  const gridWrapper = document.getElementById('calendar-grid-wrapper');
-  const settingsPanel = document.getElementById('calendar-settings-panel');
-  const calControls = document.getElementById('calendar-controls');
+  // 下部ナビゲーションタブの切り替え
+  const tabs = document.querySelectorAll('.tab-item');
+  const panes = document.querySelectorAll('.tab-pane');
 
-  tabCalendar.addEventListener('click', () => {
-    tabCalendar.classList.add('active');
-    tabSettings.classList.remove('active');
-    gridWrapper.classList.remove('hidden');
-    settingsPanel.classList.add('hidden');
-    calControls.classList.remove('hidden');
-  });
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      panes.forEach(p => p.classList.add('pane-hidden'));
+      
+      tab.classList.add('active');
+      const activePane = document.getElementById(tab.dataset.pane);
+      if (activePane) {
+        activePane.classList.remove('pane-hidden');
+      }
 
-  tabSettings.addEventListener('click', () => {
-    tabCalendar.classList.remove('active');
-    tabSettings.classList.add('active');
-    gridWrapper.classList.add('hidden');
-    settingsPanel.classList.remove('hidden');
-    calControls.classList.add('hidden');
+      // 集計タブに切り替えた場合はグラフを再描画してレスポンシブ崩れを防ぐ
+      if (tab.dataset.pane === 'pane-dashboard') {
+        setTimeout(updateChart, 50); // 描画時間を確保するためにわずかに遅延させる
+      }
+    });
   });
 
   // 設定トグルの変更イベント
-  document.getElementById('setting-work-only').addEventListener('change', function() {
-    showWorkOnly = this.checked;
-    localStorage.setItem('taxi_show_work_only', showWorkOnly);
-    renderCalendar();
-  });
+  const workOnlyCheckbox = document.getElementById('setting-work-only');
+  if (workOnlyCheckbox) {
+    workOnlyCheckbox.addEventListener('change', function() {
+      showWorkOnly = this.checked;
+      localStorage.setItem('taxi_show_work_only', showWorkOnly);
+      renderCalendar();
+    });
+  }
 }
 
 // 勤務時間の計算 (開始・終了時間から時間数を算出。深夜またぎに対応し、一律で3時間休憩を引く)
@@ -445,6 +443,11 @@ function createDayCell(dayNum, weekdayStr, dayIndex, dateStr, isToday = false) {
   dayEl.className = 'calendar-day';
   if (isToday) dayEl.classList.add('today');
 
+  // タップした時のイベントを追加
+  dayEl.addEventListener('click', () => {
+    openModalWithDate(dateStr);
+  });
+
   // 日付と曜日の表示
   const numEl = document.createElement('span');
   numEl.className = 'day-number';
@@ -493,4 +496,25 @@ function createDayCell(dayNum, weekdayStr, dayIndex, dateStr, isToday = false) {
   }
 
   return dayEl;
+}
+
+// 日付を指定して登録モーダルを開く
+function openModalWithDate(dateStr) {
+  const recordModal = document.getElementById('record-modal');
+  const dateInput = document.getElementById('input-date');
+  
+  // 日付をセット
+  dateInput.value = dateStr;
+
+  // 該当日の既存レコードを探す
+  const existingRecord = records.find(r => r.date === dateStr);
+  if (existingRecord) {
+    // 既存データをフォームにプリセット
+    document.getElementById('input-start-time').value = existingRecord.startTime;
+    document.getElementById('input-end-time').value = existingRecord.endTime;
+    document.getElementById('input-earnings').value = existingRecord.earnings;
+    document.getElementById('input-tips').value = existingRecord.tips;
+  }
+
+  recordModal.classList.add('show');
 }

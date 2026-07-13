@@ -19,7 +19,7 @@
   <div class="app-container">
     <!-- トップバー (バージョン & 更新ボタン) -->
     <div class="top-bar">
-      <span class="version-badge">v2026.07.13.1345</span>
+      <span class="version-badge">v2026.07.13.1350</span>
       <button id="refresh-btn" class="btn-icon" title="ページを更新"><i data-lucide="refresh-cw"></i></button>
     </div>
 
@@ -34,139 +34,144 @@
           <p class="subtitle">Driver Performance & Earnings Tracker</p>
         </div>
       </div>
-      <div class="header-actions">
-        <button id="add-record-btn" class="btn btn-primary">
-          <i data-lucide="plus"></i> 勤務を記録する
-        </button>
-      </div>
     </header>
 
     <!-- メインコンテンツ -->
     <main class="main-content">
-      <!-- カレンダーセクション -->
-      <section class="calendar-section card" id="calendar-section">
-        <div class="card-header calendar-header-layout">
-          <h2><i data-lucide="calendar-days"></i> 勤務カレンダー</h2>
-          <div class="calendar-header-right">
+      
+      <!-- ペイン1: カレンダー -->
+      <div id="pane-calendar" class="tab-pane">
+        <!-- カレンダーセクション -->
+        <section class="calendar-section card" id="calendar-section">
+          <div class="card-header calendar-header-layout">
+            <h2><i data-lucide="calendar-days"></i> 勤務カレンダー</h2>
             <div class="calendar-controls" id="calendar-controls">
               <button id="prev-month-btn" class="btn-icon" title="前月"><i data-lucide="chevron-left"></i></button>
               <span id="current-month-label" class="calendar-month-label">2026年 7月</span>
               <button id="next-month-btn" class="btn-icon" title="次月"><i data-lucide="chevron-right"></i></button>
             </div>
-            <div class="calendar-tabs">
-              <button id="tab-calendar" class="tab-btn active"><i data-lucide="calendar"></i> カレンダー</button>
-              <button id="tab-settings" class="tab-btn"><i data-lucide="sliders-horizontal"></i> 設定</button>
-            </div>
           </div>
-        </div>
-        <div class="calendar-grid-wrapper" id="calendar-grid-wrapper">
-          <div id="calendar-days-grid" class="calendar-days-grid">
-            <!-- JSで動的に追加されます -->
-          </div>
-        </div>
-        <!-- 設定パネル -->
-        <div id="calendar-settings-panel" class="calendar-settings-panel hidden">
-          <div class="settings-item">
-            <div class="settings-info">
-              <span class="settings-title">出勤日のみ表示する</span>
-              <span class="settings-desc">勤務実績が登録されている日だけカレンダーリストに表示し、表示をすっきりさせます。</span>
-            </div>
-            <label class="switch">
-              <input type="checkbox" id="setting-work-only">
-              <span class="slider round"></span>
-            </label>
-          </div>
-        </div>
-      </section>
-
-      <!-- サマリーカードセクション -->
-      <section class="summary-section">
-        <div class="summary-card" id="card-days">
-          <div class="card-icon"><i data-lucide="calendar"></i></div>
-          <div class="card-data">
-            <span class="card-label">出勤日数</span>
-            <span class="card-value" id="val-days">0 <span class="unit">日</span></span>
-          </div>
-        </div>
-        <div class="summary-card" id="card-hours">
-          <div class="card-icon"><i data-lucide="clock"></i></div>
-          <div class="card-data">
-            <span class="card-label">総勤務時間</span>
-            <span class="card-value" id="val-hours">0 <span class="unit">時間</span></span>
-          </div>
-        </div>
-        <div class="summary-card text-success" id="card-earnings">
-          <div class="card-icon"><i data-lucide="japanese-yen"></i></div>
-          <div class="card-data">
-            <span class="card-label">総売上金額</span>
-            <span class="card-value" id="val-earnings">¥0</span>
-          </div>
-        </div>
-        <div class="summary-card text-accent" id="card-tips">
-          <div class="card-icon"><i data-lucide="sparkles"></i></div>
-          <div class="card-data">
-            <span class="card-label">総チップ額</span>
-            <span class="card-value" id="val-tips">¥0</span>
-          </div>
-        </div>
-        <div class="summary-card text-info" id="card-hourly">
-          <div class="card-icon"><i data-lucide="trending-up"></i></div>
-          <div class="card-data">
-            <span class="card-label">平均時給 (売上+チップ)</span>
-            <span class="card-value" id="val-hourly">¥0<span class="unit">/h</span></span>
-          </div>
-        </div>
-      </section>
-
-      <!-- グラフ & 統計 -->
-      <section class="charts-section">
-        <div class="chart-container card">
-          <div class="card-header">
-            <h2><i data-lucide="bar-chart-3"></i> 日別売上・チップ推移</h2>
-            <div class="chart-legend">
-              <span class="legend-item"><span class="legend-color bg-primary"></span>売上</span>
-              <span class="legend-item"><span class="legend-color bg-accent"></span>チップ</span>
-            </div>
-          </div>
-          <div class="chart-wrapper">
-            <canvas id="earningsChart"></canvas>
-          </div>
-        </div>
-      </section>
-
-      <!-- 履歴テーブル -->
-      <section class="history-section card">
-        <div class="card-header">
-          <h2><i data-lucide="history"></i> 勤務履歴</h2>
-          <span class="badge" id="record-count">0 件の記録</span>
-        </div>
-        <div class="table-wrapper">
-          <table class="history-table">
-            <thead>
-              <tr>
-                <th>日付</th>
-                <th>時間</th>
-                <th>勤務時間</th>
-                <th>売上金額</th>
-                <th>チップ</th>
-                <th>合計獲得額</th>
-                <th>操作</th>
-              </tr>
-            </thead>
-            <tbody id="history-tbody">
+          <div class="calendar-grid-wrapper" id="calendar-grid-wrapper">
+            <div id="calendar-days-grid" class="calendar-days-grid">
               <!-- JSで動的に追加されます -->
-              <tr class="empty-state">
-                <td colspan="7">
-                  <div class="empty-message">
-                    <i data-lucide="inbox"></i>
-                    <p>勤務記録がありません。「勤務を記録する」ボタンから登録してください。</p>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ペイン2: ダッシュボード (集計数値 & グラフ) -->
+      <div id="pane-dashboard" class="tab-pane pane-hidden">
+        <!-- サマリーカードセクション -->
+        <section class="summary-section">
+          <div class="summary-card" id="card-days">
+            <div class="card-icon"><i data-lucide="calendar"></i></div>
+            <div class="card-data">
+              <span class="card-label">出勤日数</span>
+              <span class="card-value" id="val-days">0 <span class="unit">日</span></span>
+            </div>
+          </div>
+          <div class="summary-card" id="card-hours">
+            <div class="card-icon"><i data-lucide="clock"></i></div>
+            <div class="card-data">
+              <span class="card-label">総勤務時間</span>
+              <span class="card-value" id="val-hours">0 <span class="unit">時間</span></span>
+            </div>
+          </div>
+          <div class="summary-card text-success" id="card-earnings">
+            <div class="card-icon"><i data-lucide="japanese-yen"></i></div>
+            <div class="card-data">
+              <span class="card-label">総売上金額</span>
+              <span class="card-value" id="val-earnings">¥0</span>
+            </div>
+          </div>
+          <div class="summary-card text-accent" id="card-tips">
+            <div class="card-icon"><i data-lucide="sparkles"></i></div>
+            <div class="card-data">
+              <span class="card-label">総チップ額</span>
+              <span class="card-value" id="val-tips">¥0</span>
+            </div>
+          </div>
+          <div class="summary-card text-info" id="card-hourly">
+            <div class="card-icon"><i data-lucide="trending-up"></i></div>
+            <div class="card-data">
+              <span class="card-label">平均時給 (売上+チップ)</span>
+              <span class="card-value" id="val-hourly">¥0<span class="unit">/h</span></span>
+            </div>
+          </div>
+        </section>
+
+        <!-- グラフ & 統計 -->
+        <section class="charts-section">
+          <div class="chart-container card">
+            <div class="card-header">
+              <h2><i data-lucide="bar-chart-3"></i> 日別売上・チップ推移</h2>
+              <div class="chart-legend">
+                <span class="legend-item"><span class="legend-color bg-primary"></span>売上</span>
+                <span class="legend-item"><span class="legend-color bg-accent"></span>チップ</span>
+              </div>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="earningsChart"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <!-- 履歴テーブル -->
+        <section class="history-section card">
+          <div class="card-header">
+            <h2><i data-lucide="history"></i> 勤務履歴</h2>
+            <span class="badge" id="record-count">0 件の記録</span>
+          </div>
+          <div class="table-wrapper">
+            <table class="history-table">
+              <thead>
+                <tr>
+                  <th>日付</th>
+                  <th>時間</th>
+                  <th>勤務時間</th>
+                  <th>売上金額</th>
+                  <th>チップ</th>
+                  <th>合計獲得額</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="history-tbody">
+                <!-- JSで動的に追加されます -->
+                <tr class="empty-state">
+                  <td colspan="7">
+                    <div class="empty-message">
+                      <i data-lucide="inbox"></i>
+                      <p>勤務記録がありません。カレンダーの日付をタップして登録してください。</p>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- ペイン3: 設定 -->
+      <div id="pane-settings" class="tab-pane pane-hidden">
+        <section class="settings-section card">
+          <div class="card-header">
+            <h2><i data-lucide="settings"></i> 表示・動作設定</h2>
+          </div>
+          <div class="settings-list">
+            <div class="settings-item">
+              <div class="settings-info">
+                <span class="settings-title">出勤日のみ表示する</span>
+                <span class="settings-desc">勤務実績が登録されている日だけカレンダーリストに表示し、表示をすっきりさせます。</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="setting-work-only">
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+        </section>
+      </div>
+
     </main>
 
     <!-- 勤務記録追加モーダル -->
@@ -208,6 +213,22 @@
         </form>
       </div>
     </div>
+
+    <!-- 画面下部ナビゲーションバー -->
+    <nav class="tab-bar" id="tab-bar">
+      <button class="tab-item active" data-pane="pane-calendar">
+        <i data-lucide="calendar"></i>
+        <span>カレンダー</span>
+      </button>
+      <button class="tab-item" data-pane="pane-dashboard">
+        <i data-lucide="layout-dashboard"></i>
+        <span>集計</span>
+      </button>
+      <button class="tab-item" data-pane="pane-settings">
+        <i data-lucide="settings"></i>
+        <span>設定</span>
+      </button>
+    </nav>
   </div>
 
   <script src="app.js"></script>
