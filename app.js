@@ -2,11 +2,20 @@
 let records = [];
 let earningsChart = null;
 let calendarDate = new Date();
+let showWorkOnly = false;
 
 // DOMの読み込み完了時
 document.addEventListener('DOMContentLoaded', () => {
   // 初期設定と読み込み
   loadRecords();
+  
+  // 設定の読み込み
+  showWorkOnly = localStorage.getItem('taxi_show_work_only') === 'true';
+  const workOnlyCheckbox = document.getElementById('setting-work-only');
+  if (workOnlyCheckbox) {
+    workOnlyCheckbox.checked = showWorkOnly;
+  }
+
   initEventListeners();
   updateUI();
   
@@ -93,6 +102,36 @@ function initEventListeners() {
   // ページ更新ボタン
   document.getElementById('refresh-btn').addEventListener('click', () => {
     window.location.reload();
+  });
+
+  // カレンダー設定タブの切り替え
+  const tabCalendar = document.getElementById('tab-calendar');
+  const tabSettings = document.getElementById('tab-settings');
+  const gridWrapper = document.getElementById('calendar-grid-wrapper');
+  const settingsPanel = document.getElementById('calendar-settings-panel');
+  const calControls = document.getElementById('calendar-controls');
+
+  tabCalendar.addEventListener('click', () => {
+    tabCalendar.classList.add('active');
+    tabSettings.classList.remove('active');
+    gridWrapper.classList.remove('hidden');
+    settingsPanel.classList.add('hidden');
+    calControls.classList.remove('hidden');
+  });
+
+  tabSettings.addEventListener('click', () => {
+    tabCalendar.classList.remove('active');
+    tabSettings.classList.add('active');
+    gridWrapper.classList.add('hidden');
+    settingsPanel.classList.remove('hidden');
+    calControls.classList.add('hidden');
+  });
+
+  // 設定トグルの変更イベント
+  document.getElementById('setting-work-only').addEventListener('change', function() {
+    showWorkOnly = this.checked;
+    localStorage.setItem('taxi_show_work_only', showWorkOnly);
+    renderCalendar();
   });
 }
 
@@ -357,10 +396,18 @@ function renderCalendar() {
 
   // 当月の1日から末日まで順番にセルを生成（前月・翌月ダミーは描画しない）
   const todayStr = new Date().toISOString().split('T')[0];
+  let renderedCount = 0;
+
   for (let i = 1; i <= totalDays; i++) {
     const dateStr = formatDateStr(year, month, i);
     const isToday = dateStr === todayStr;
     
+    // 「出勤日のみ表示」設定のフィルタリング
+    const hasWork = records.some(r => r.date === dateStr);
+    if (showWorkOnly && !hasWork) {
+      continue;
+    }
+
     // 曜日の取得 (0:日, 1:月, ... 6:土)
     const dayIndex = new Date(year, month, i).getDay();
     const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
@@ -368,6 +415,18 @@ function renderCalendar() {
 
     const dayEl = createDayCell(i, weekdayStr, dayIndex, dateStr, isToday);
     grid.appendChild(dayEl);
+    renderedCount++;
+  }
+
+  // 出勤日の表示が0件だった場合のプレースホルダー
+  if (renderedCount === 0) {
+    const emptyEl = document.createElement('div');
+    emptyEl.className = 'empty-calendar-message';
+    emptyEl.innerHTML = `
+      <i data-lucide="info"></i>
+      <p>この月の出勤実績はありません。</p>
+    `;
+    grid.appendChild(emptyEl);
   }
 }
 

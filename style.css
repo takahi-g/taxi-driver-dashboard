@@ -218,7 +218,167 @@ body {
   color: var(--color-primary);
 }
 
+/* ユーティリティ */
+.hidden {
+  display: none !important;
+}
+
 /* カレンダーセクション */
+.calendar-header-layout {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.calendar-header-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+/* タブ切り替えボタン */
+.calendar-tabs {
+  display: flex;
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-color);
+  padding: 0.25rem;
+  border-radius: var(--radius-md);
+  gap: 0.25rem;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: var(--transition-smooth);
+}
+
+.tab-btn i {
+  width: 14px;
+  height: 14px;
+}
+
+.tab-btn:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.tab-btn.active {
+  color: var(--text-dark);
+  background: linear-gradient(135deg, var(--color-primary), #f39c12);
+}
+
+/* 設定パネル */
+.calendar-settings-panel {
+  padding: 1.5rem 1.25rem;
+  background-color: rgba(255, 255, 255, 0.01);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  margin-top: 0.5rem;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.settings-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+.settings-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.settings-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.settings-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* トグルスイッチ(Switch) CSS */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
+  transition: .3s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #fff;
+  transition: .3s;
+}
+
+input:checked + .slider {
+  background: linear-gradient(135deg, var(--color-primary), #f39c12);
+  border-color: var(--color-primary-hover);
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px var(--color-primary);
+}
+
+input:checked + .slider:before {
+  transform: translateX(24px);
+  background-color: var(--text-dark);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
 .calendar-controls {
   display: flex;
   align-items: center;
@@ -494,6 +654,24 @@ body {
   color: #fff;
 }
 
+.empty-calendar-message {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.empty-calendar-message i {
+  width: 32px;
+  height: 32px;
+  color: var(--color-primary);
+  opacity: 0.8;
+}
+
 /* 空の状態 */
 .empty-state {
   text-align: center;
@@ -628,6 +806,26 @@ input:focus {
     flex-direction: column;
     align-items: flex-start;
     gap: 1.25rem;
+  }
+  .calendar-header-layout {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .calendar-header-right {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+  .settings-item {
+    flex-direction: row;
+    gap: 1rem;
+  }
+  .settings-title {
+    font-size: 0.9rem;
+  }
+  .settings-desc {
+    font-size: 0.75rem;
   }
   .header-actions {
     width: 100%;

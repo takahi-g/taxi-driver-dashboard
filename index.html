@@ -19,7 +19,7 @@
   <div class="app-container">
     <!-- トップバー (バージョン & 更新ボタン) -->
     <div class="top-bar">
-      <span class="version-badge">v2026.07.13.1340</span>
+      <span class="version-badge">v2026.07.13.1345</span>
       <button id="refresh-btn" class="btn-icon" title="ページを更新"><i data-lucide="refresh-cw"></i></button>
     </div>
 
@@ -45,17 +45,36 @@
     <main class="main-content">
       <!-- カレンダーセクション -->
       <section class="calendar-section card" id="calendar-section">
-        <div class="card-header">
+        <div class="card-header calendar-header-layout">
           <h2><i data-lucide="calendar-days"></i> 勤務カレンダー</h2>
-          <div class="calendar-controls">
-            <button id="prev-month-btn" class="btn-icon" title="前月"><i data-lucide="chevron-left"></i></button>
-            <span id="current-month-label" class="calendar-month-label">2026年 7月</span>
-            <button id="next-month-btn" class="btn-icon" title="次月"><i data-lucide="chevron-right"></i></button>
+          <div class="calendar-header-right">
+            <div class="calendar-controls" id="calendar-controls">
+              <button id="prev-month-btn" class="btn-icon" title="前月"><i data-lucide="chevron-left"></i></button>
+              <span id="current-month-label" class="calendar-month-label">2026年 7月</span>
+              <button id="next-month-btn" class="btn-icon" title="次月"><i data-lucide="chevron-right"></i></button>
+            </div>
+            <div class="calendar-tabs">
+              <button id="tab-calendar" class="tab-btn active"><i data-lucide="calendar"></i> カレンダー</button>
+              <button id="tab-settings" class="tab-btn"><i data-lucide="sliders-horizontal"></i> 設定</button>
+            </div>
           </div>
         </div>
-        <div class="calendar-grid-wrapper">
+        <div class="calendar-grid-wrapper" id="calendar-grid-wrapper">
           <div id="calendar-days-grid" class="calendar-days-grid">
             <!-- JSで動的に追加されます -->
+          </div>
+        </div>
+        <!-- 設定パネル -->
+        <div id="calendar-settings-panel" class="calendar-settings-panel hidden">
+          <div class="settings-item">
+            <div class="settings-info">
+              <span class="settings-title">出勤日のみ表示する</span>
+              <span class="settings-desc">勤務実績が登録されている日だけカレンダーリストに表示し、表示をすっきりさせます。</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="setting-work-only">
+              <span class="slider round"></span>
+            </label>
           </div>
         </div>
       </section>
