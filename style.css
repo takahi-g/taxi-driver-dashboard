@@ -184,13 +184,14 @@ body {
 }
 
 .btn-secondary {
-  background-color: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--border-color);
-  color: var(--text-main);
+  background-color: transparent;
+  border: 0 solid transparent; /* 枠線を完全に消去 */
+  color: var(--text-muted);
 }
 
 .btn-secondary:hover {
-  background-color: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 .btn-icon {
