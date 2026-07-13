@@ -745,7 +745,7 @@ input:checked + .slider:before {
   z-index: 2500;             /* ナビゲーションより前面 */
   overflow-y: auto;          /* iOSキーボードガタつき防止のスクロール設定 */
   -webkit-overflow-scrolling: touch;
-  padding: 2rem 1rem;
+  padding: 2rem 0;           /* 左右のpaddingを0にして計算バグを防ぐ */
 }
 
 .modal.show {
@@ -753,16 +753,16 @@ input:checked + .slider:before {
 }
 
 .modal-content {
-  width: 100%;               /* 親のpaddingで左右が適切に引かれるため見切れない */
-  max-width: 440px;
+  width: calc(100% - 32px);  /* 左右に16pxの完璧なマージンを保証 */
+  max-width: 420px;          /* スマートフォンで最適な横幅 */
   background: var(--bg-surface-solid);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 1.75rem;
+  padding: 1.5rem;           /* モバイル表示用に少しスリムに */
   box-shadow: 0 24px 48px rgba(0, 0, 0, 0.6);
   margin: 5vh auto;          /* 上部に余裕をもたせたセンタリング */
   position: relative;
-  animation: modalFadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;    /* 確実にパディング込みで幅を計算させる */
 }
 
 @keyframes modalFadeIn {
@@ -786,7 +786,7 @@ input:checked + .slider:before {
 }
 
 .modal-header h3 {
-  font-size: 1.3rem;
+  font-size: 1.35rem;
   font-weight: 800;
   color: #fff;
 }
@@ -796,7 +796,7 @@ input:checked + .slider:before {
   border: none;
   color: var(--text-muted);
   cursor: pointer;
-  padding: 0.6rem;           /* タッチ領域の拡大 */
+  padding: 0.65rem;          /* タッチ領域のさらなる拡大 */
   border-radius: 50%;
   transition: var(--transition-smooth);
   display: flex;
@@ -811,8 +811,8 @@ input:checked + .slider:before {
 }
 
 .close-btn i {
-  width: 24px;               /* 閉じるアイコンサイズ拡大 */
-  height: 24px;
+  width: 26px;               /* 閉じるアイコンサイズ拡大 */
+  height: 26px;
 }
 
 .form-group {
@@ -827,21 +827,24 @@ input:checked + .slider:before {
 
 label {
   display: block;
-  font-size: 1.05rem;        /* 視認性の高いサイズ */
-  font-weight: 700;
+  font-size: 1.15rem;        /* 1.05remから1.15remへ日付とラベルの文字を大きく */
+  font-weight: 800;          /* より太く見やすく */
   color: #fff;
   margin-bottom: 0.6rem;
 }
 
 input {
+  display: block;            /* blockにして確実にはみ出しを防ぐ */
   width: 100%;
+  max-width: 100%;           /* 親幅を絶対に突き抜けない */
+  box-sizing: border-box;    /* paddingを含めた幅計算 */
   background-color: rgba(255, 255, 255, 0.06);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   color: #fff;
   padding: 0.9rem 1.1rem;
   font-family: inherit;
-  font-size: 1.1rem;         /* 入力文字を大きく */
+  font-size: 1.2rem;         /* 入力文字・日付表示の文字サイズをさらに大きく */
   transition: var(--transition-smooth);
   height: 52px;              /* タップしやすい大きさ */
 }
