@@ -292,6 +292,9 @@ body {
 .calendar-header-layout {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+
 /* 曜日ヘッダー (日〜土) */
 .calendar-weekdays {
   display: grid;
@@ -860,7 +863,7 @@ input:focus {
 /* レスポンシブ対応 */
 @media (max-width: 768px) {
   .app-container {
-    padding: 0.5rem 1rem 1.5rem 1rem;
+    padding: 0.5rem 1rem 8rem 1rem;
   }
   .main-header {
     flex-direction: column;
