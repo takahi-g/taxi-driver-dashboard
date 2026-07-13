@@ -48,7 +48,7 @@ body {
 .app-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem 1.5rem 6rem 1.5rem;
+  padding: 1rem 1.5rem 2rem 1.5rem;
 }
 
 /* ヘッダー */
@@ -236,100 +236,38 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* 下部タブバー (Tab Bar) */
-.tab-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 64px;
-  background: rgba(15, 17, 26, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-top: 1px solid var(--border-color);
+/* 上部タブバー (Top Tab Bar) */
+.top-tab-bar {
   display: flex;
-  justify-content: space-around;
-  align-items: center;
-  z-index: 1000;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
-}
-
-.tab-item {
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  font-family: inherit;
-  font-size: 0.75rem;
-  font-weight: 600;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.25rem;
-  cursor: pointer;
-  width: 33%;
-  height: 100%;
-  transition: var(--transition-smooth);
-}
-
-.tab-item i {
-  width: 20px;
-  height: 20px;
-}
-
-.tab-item:hover {
-  color: #fff;
-}
-
-.tab-item.active {
-  color: var(--color-primary);
-}
-
-/* カレンダーセクション */
-.calendar-header-layout {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.calendar-header-right {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-}
-
-/* タブ切り替えボタン */
-.calendar-tabs {
-  display: flex;
-  background-color: rgba(255, 255, 255, 0.04);
+  background-color: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--border-color);
   padding: 0.25rem;
   border-radius: var(--radius-md);
   gap: 0.25rem;
+  margin-bottom: 1.5rem;
 }
 
 .tab-btn {
+  flex: 1;
   background: none;
   border: none;
   color: var(--text-muted);
   font-family: inherit;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  padding: 0.4rem 0.85rem;
+  padding: 0.65rem 1rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  justify-content: center;
+  gap: 0.4rem;
   transition: var(--transition-smooth);
 }
 
 .tab-btn i {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
 }
 
 .tab-btn:hover {
@@ -340,21 +278,96 @@ body {
 .tab-btn.active {
   color: var(--text-dark);
   background: linear-gradient(135deg, var(--color-primary), #f39c12);
+  box-shadow: 0 2px 8px rgba(245, 176, 65, 0.25);
 }
 
-/* 設定パネル */
-.calendar-settings-panel {
-  padding: 1.5rem 1.25rem;
-  background-color: rgba(255, 255, 255, 0.01);
-  border: 1px solid var(--border-color);
+/* カレンダーセクション */
+.calendar-header-layout {
+  display: flex;
+  justify-content: space-between;
+/* 曜日ヘッダー (日〜土) */
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 0.5rem;
+}
+
+.weekday {
+  padding: 0.5rem 0;
+}
+
+/* カレンダー（出勤リスト）用 */
+.work-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.work-list-item {
+  padding: 0.8rem 1.25rem;
+  background-color: rgba(22, 28, 45, 0.85);
+  border: 1px solid rgba(245, 176, 65, 0.25);
   border-radius: var(--radius-md);
-  margin-top: 0.5rem;
-  animation: fadeIn 0.3s ease;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  transition: var(--transition-smooth);
+  cursor: pointer;
+  min-height: 54px;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
+.work-list-item:hover {
+  background-color: rgba(22, 28, 45, 0.95);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 12px rgba(245, 176, 65, 0.15);
+  transform: translateY(-1px);
+}
+
+.work-list-item .day-number {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main);
+  flex-shrink: 0;
+}
+
+.work-list-item .day-number.sun { color: #fc8181; }
+.work-list-item .day-number.sat { color: #63b3ed; }
+
+.work-list-item .day-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.work-list-item .day-hours {
+  font-size: 1rem;
+  color: var(--color-info);
+  font-weight: 600;
+  background-color: rgba(52, 152, 219, 0.15);
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+}
+
+.work-list-item .day-earnings {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-success);
+}
+
+.work-list-item .day-tips {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-accent);
 }
 
 .settings-item {
@@ -462,31 +475,43 @@ input:checked + .slider:before {
   height: 32px;
   border-radius: var(--radius-sm);
   display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.btn-icon:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* 設定カレンダー（7列グリッド） */
 .calendar-days-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.4rem;
 }
 
 .calendar-day {
-  padding: 0.8rem 1.25rem;
+  aspect-ratio: 1;
+  min-height: 52px;
   background-color: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
   transition: var(--transition-smooth);
   position: relative;
-  min-height: 54px;
   cursor: pointer;
 }
 
 .calendar-day:hover {
   background-color: rgba(255, 255, 255, 0.06);
   border-color: var(--color-primary);
-  box-shadow: 0 0 12px rgba(245, 176, 65, 0.15);
+  box-shadow: 0 0 10px rgba(245, 176, 65, 0.2);
   transform: translateY(-1px);
 }
 
@@ -495,11 +520,27 @@ input:checked + .slider:before {
   background-color: rgba(245, 176, 65, 0.05);
 }
 
+.calendar-day.has-work {
+  background-color: rgba(245, 176, 65, 0.12) !important;
+  border-color: rgba(245, 176, 65, 0.4) !important;
+  box-shadow: inset 0 0 10px rgba(245, 176, 65, 0.05);
+}
+
+/* 設定カレンダー用のドット */
+.calendar-day.has-work::after {
+  content: '';
+  position: absolute;
+  bottom: 6px;
+  width: 5px;
+  height: 5px;
+  background-color: var(--color-primary);
+  border-radius: 50%;
+}
+
 .day-number {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: var(--text-main);
-  flex-shrink: 0;
 }
 
 .day-number.sun {
@@ -512,42 +553,6 @@ input:checked + .slider:before {
 
 .calendar-day.today .day-number {
   color: var(--color-primary);
-}
-
-.day-info {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 1rem;
-  flex-shrink: 0;
-  white-space: nowrap;
-}
-
-.day-hours {
-  font-size: 1rem;
-  color: var(--color-info);
-  font-weight: 600;
-  background-color: rgba(52, 152, 219, 0.15);
-  padding: 0.2rem 0.5rem;
-  border-radius: var(--radius-sm);
-}
-
-.day-earnings {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--color-success);
-}
-
-.day-tips {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--color-accent);
-}
-
-.calendar-day.has-work {
-  background-color: rgba(22, 28, 45, 0.85);
-  border-color: rgba(245, 176, 65, 0.25);
-  box-shadow: inset 0 0 10px rgba(245, 176, 65, 0.05);
 }
 
 /* サマリーカードセクション */
@@ -890,25 +895,23 @@ input:focus {
     font-size: 0.85rem;
   }
   .calendar-day {
+    min-height: 44px;
+  }
+  .work-list-item {
     padding: 0.6rem 0.8rem;
-    gap: 0.5rem;
     min-height: 48px;
   }
-  .day-number {
+  .work-list-item .day-number {
     font-size: 1.1rem;
-    min-width: auto;
   }
-  .day-info {
+  .work-list-item .day-info {
     gap: 0.5rem;
-    flex-wrap: nowrap;
-    flex-direction: row;
-    align-items: center;
   }
-  .day-hours {
+  .work-list-item .day-hours {
     font-size: 0.85rem;
     padding: 0.15rem 0.35rem;
   }
-  .day-earnings, .day-tips {
+  .work-list-item .day-earnings, .work-list-item .day-tips {
     font-size: 0.85rem;
   }
 }

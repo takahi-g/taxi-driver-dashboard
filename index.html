@@ -19,7 +19,7 @@
   <div class="app-container">
     <!-- トップバー (バージョン & 更新ボタン) -->
     <div class="top-bar">
-      <span class="version-badge">v2026.07.13.1352</span>
+      <span class="version-badge">v2026.07.13.1400</span>
       <button id="refresh-btn" class="btn-icon" title="ページを更新"><i data-lucide="refresh-cw"></i></button>
     </div>
 
@@ -34,25 +34,38 @@
           <p class="subtitle">Driver Performance & Earnings Tracker</p>
         </div>
       </div>
+      <div class="header-actions">
+        <button id="add-record-btn" class="btn btn-primary">
+          <i data-lucide="plus"></i> 勤務を記録する
+        </button>
+      </div>
     </header>
+
+    <!-- 上部タブバー -->
+    <div class="top-tab-bar" id="top-tab-bar">
+      <button class="tab-btn active" data-pane="pane-calendar">
+        <i data-lucide="calendar"></i> カレンダー
+      </button>
+      <button class="tab-btn" data-pane="pane-dashboard">
+        <i data-lucide="layout-dashboard"></i> 集計
+      </button>
+      <button class="tab-btn" data-pane="pane-settings">
+        <i data-lucide="settings"></i> 設定
+      </button>
+    </div>
 
     <!-- メインコンテンツ -->
     <main class="main-content">
       
-      <!-- ペイン1: カレンダー -->
+      <!-- ペイン1: カレンダー (出勤リスト表示) -->
       <div id="pane-calendar" class="tab-pane">
-        <!-- カレンダーセクション -->
-        <section class="calendar-section card" id="calendar-section">
-          <div class="card-header calendar-header-layout">
-            <h2><i data-lucide="calendar-days"></i> 勤務カレンダー</h2>
-            <div class="calendar-controls" id="calendar-controls">
-              <button id="prev-month-btn" class="btn-icon" title="前月"><i data-lucide="chevron-left"></i></button>
-              <span id="current-month-label" class="calendar-month-label">2026年 7月</span>
-              <button id="next-month-btn" class="btn-icon" title="次月"><i data-lucide="chevron-right"></i></button>
-            </div>
+        <section class="work-list-section card">
+          <div class="card-header">
+            <h2><i data-lucide="check-square"></i> 出勤記録リスト</h2>
+            <span class="badge" id="work-days-count">0 日出勤</span>
           </div>
-          <div class="calendar-grid-wrapper" id="calendar-grid-wrapper">
-            <div id="calendar-days-grid" class="calendar-days-grid">
+          <div class="calendar-grid-wrapper">
+            <div id="work-list-container" class="work-list-container">
               <!-- JSで動的に追加されます -->
             </div>
           </div>
@@ -141,7 +154,7 @@
                   <td colspan="7">
                     <div class="empty-message">
                       <i data-lucide="inbox"></i>
-                      <p>勤務記録がありません。カレンダーの日付をタップして登録してください。</p>
+                      <p>勤務記録がありません。設定カレンダーの日付をタップして登録してください。</p>
                     </div>
                   </td>
                 </tr>
@@ -151,17 +164,44 @@
         </section>
       </div>
 
-      <!-- ペイン3: 設定 -->
+      <!-- ペイン3: 設定 (入力カレンダー & 各種設定) -->
       <div id="pane-settings" class="tab-pane pane-hidden">
-        <section class="settings-section card">
+        <!-- 入力用カレンダーセクション -->
+        <section class="calendar-section card" id="calendar-section">
+          <div class="card-header calendar-header-layout">
+            <h2><i data-lucide="calendar-days"></i> 出勤日登録カレンダー</h2>
+            <div class="calendar-controls" id="calendar-controls">
+              <button id="prev-month-btn" class="btn-icon" title="前月"><i data-lucide="chevron-left"></i></button>
+              <span id="current-month-label" class="calendar-month-label">2026年 7月</span>
+              <button id="next-month-btn" class="btn-icon" title="次月"><i data-lucide="chevron-right"></i></button>
+            </div>
+          </div>
+          <div class="calendar-grid-wrapper">
+            <div class="calendar-weekdays">
+              <div class="weekday text-danger">日</div>
+              <div class="weekday">月</div>
+              <div class="weekday">火</div>
+              <div class="weekday">水</div>
+              <div class="weekday">木</div>
+              <div class="weekday">金</div>
+              <div class="weekday text-info">土</div>
+            </div>
+            <div id="calendar-days-grid" class="calendar-days-grid">
+              <!-- JSで動的に追加されます -->
+            </div>
+          </div>
+        </section>
+
+        <!-- アプリ設定 -->
+        <section class="settings-section card mt-4">
           <div class="card-header">
-            <h2><i data-lucide="settings"></i> 表示・動作設定</h2>
+            <h2><i data-lucide="sliders-horizontal"></i> アプリ設定</h2>
           </div>
           <div class="settings-list">
             <div class="settings-item">
               <div class="settings-info">
-                <span class="settings-title">出勤日のみ表示する</span>
-                <span class="settings-desc">勤務実績が登録されている日だけカレンダーリストに表示し、表示をすっきりさせます。</span>
+                <span class="settings-title">出勤日のみリスト表示する</span>
+                <span class="settings-desc">「カレンダー」タブの出勤リストで、登録がある日だけをすっきりと表示します。</span>
               </div>
               <label class="switch">
                 <input type="checkbox" id="setting-work-only">
@@ -213,22 +253,6 @@
         </form>
       </div>
     </div>
-
-    <!-- 画面下部ナビゲーションバー -->
-    <nav class="tab-bar" id="tab-bar">
-      <button class="tab-item active" data-pane="pane-calendar">
-        <i data-lucide="calendar"></i>
-        <span>カレンダー</span>
-      </button>
-      <button class="tab-item" data-pane="pane-dashboard">
-        <i data-lucide="layout-dashboard"></i>
-        <span>集計</span>
-      </button>
-      <button class="tab-item" data-pane="pane-settings">
-        <i data-lucide="settings"></i>
-        <span>設定</span>
-      </button>
-    </nav>
   </div>
 
   <script src="app.js"></script>

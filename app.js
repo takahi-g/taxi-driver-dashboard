@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // イベントリスナーの登録
 function initEventListeners() {
+  const addRecordBtn = document.getElementById('add-record-btn');
   const recordModal = document.getElementById('record-modal');
   const closeModalBtn = document.getElementById('close-modal-btn');
   const cancelBtn = document.getElementById('cancel-btn');
@@ -35,6 +36,13 @@ function initEventListeners() {
   const closeModal = () => {
     recordModal.classList.remove('show');
   };
+
+  if (addRecordBtn) {
+    addRecordBtn.addEventListener('click', () => {
+      const today = new Date().toISOString().split('T')[0];
+      openModalWithDate(today);
+    });
+  }
 
   closeModalBtn.addEventListener('click', closeModal);
   cancelBtn.addEventListener('click', closeModal);
@@ -84,17 +92,23 @@ function initEventListeners() {
     saveRecords();
     updateUI();
     closeModal();
+
+    // 登録完了時に自動的にカレンダー（出勤リスト）タブに切り替えて変更を確認できるようにする
+    const calendarTab = document.querySelector('.tab-btn[data-pane="pane-calendar"]');
+    if (calendarTab) {
+      calendarTab.click();
+    }
   });
 
   // カレンダーコントロール
   document.getElementById('prev-month-btn').addEventListener('click', () => {
     calendarDate.setMonth(calendarDate.getMonth() - 1);
-    renderCalendar();
+    renderInputCalendar();
   });
 
   document.getElementById('next-month-btn').addEventListener('click', () => {
     calendarDate.setMonth(calendarDate.getMonth() + 1);
-    renderCalendar();
+    renderInputCalendar();
   });
 
   // ページ更新ボタン
@@ -102,8 +116,8 @@ function initEventListeners() {
     window.location.reload();
   });
 
-  // 下部ナビゲーションタブの切り替え
-  const tabs = document.querySelectorAll('.tab-item');
+  // 上部タブバーの切り替え
+  const tabs = document.querySelectorAll('.tab-btn');
   const panes = document.querySelectorAll('.tab-pane');
 
   tabs.forEach(tab => {
@@ -119,7 +133,7 @@ function initEventListeners() {
 
       // 集計タブに切り替えた場合はグラフを再描画してレスポンシブ崩れを防ぐ
       if (tab.dataset.pane === 'pane-dashboard') {
-        setTimeout(updateChart, 50); // 描画時間を確保するためにわずかに遅延させる
+        setTimeout(updateChart, 50);
       }
     });
   });
@@ -130,7 +144,7 @@ function initEventListeners() {
     workOnlyCheckbox.addEventListener('change', function() {
       showWorkOnly = this.checked;
       localStorage.setItem('taxi_show_work_only', showWorkOnly);
-      renderCalendar();
+      renderWorkList();
     });
   }
 }
@@ -191,7 +205,8 @@ function updateUI() {
   updateMetrics();
   updateTable();
   updateChart();
-  renderCalendar();
+  renderWorkList();
+  renderInputCalendar();
   
   // 動的に追加された要素のアイコンを再描画
   lucide.createIcons();
@@ -380,45 +395,45 @@ function updateChart() {
   });
 }
 
-// カレンダーの描画ロジック
-function renderCalendar() {
+// カレンダー（出勤リスト）の描画ロジック (今月の登録データのみ表示)
+function renderWorkList() {
   const year = calendarDate.getFullYear();
   const month = calendarDate.getMonth();
 
-  // ラベル更新
-  document.getElementById('current-month-label').innerText = `${year}年 ${month + 1}月`;
+  const container = document.getElementById('work-list-container');
+  if (!container) return;
+  container.innerHTML = '';
 
-  const grid = document.getElementById('calendar-days-grid');
-  grid.innerHTML = '';
-
-  // その月の日数
   const totalDays = new Date(year, month + 1, 0).getDate();
-
-  // 当月の1日から末日まで順番にセルを生成（前月・翌月ダミーは描画しない）
   const todayStr = new Date().toISOString().split('T')[0];
   let renderedCount = 0;
 
   for (let i = 1; i <= totalDays; i++) {
     const dateStr = formatDateStr(year, month, i);
-    const isToday = dateStr === todayStr;
+    const hasWork = records.some(r => r.date === dateStr);
     
     // 「出勤日のみ表示」設定のフィルタリング
-    const hasWork = records.some(r => r.date === dateStr);
     if (showWorkOnly && !hasWork) {
       continue;
     }
 
-    // 曜日の取得 (0:日, 1:月, ... 6:土)
+    const isToday = dateStr === todayStr;
     const dayIndex = new Date(year, month, i).getDay();
     const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
     const weekdayStr = weekdays[dayIndex];
 
-    const dayEl = createDayCell(i, weekdayStr, dayIndex, dateStr, isToday);
-    grid.appendChild(dayEl);
+    const listItem = createWorkListItem(i, weekdayStr, dayIndex, dateStr, isToday, hasWork);
+    container.appendChild(listItem);
     renderedCount++;
   }
 
-  // 出勤日の表示が0件だった場合のプレースホルダー
+  // バッジ件数更新
+  const workDaysCount = records.filter(r => {
+    const d = new Date(r.date);
+    return d.getFullYear() === year && d.getMonth() === month;
+  }).length;
+  document.getElementById('work-days-count').innerText = `${workDaysCount} 日出勤`;
+
   if (renderedCount === 0) {
     const emptyEl = document.createElement('div');
     emptyEl.className = 'empty-calendar-message';
@@ -426,7 +441,46 @@ function renderCalendar() {
       <i data-lucide="info"></i>
       <p>この月の出勤実績はありません。</p>
     `;
-    grid.appendChild(emptyEl);
+    container.appendChild(emptyEl);
+  }
+}
+
+// 7列グリッドカレンダー（設定タブ内入力カレンダー）の描画ロジック
+function renderInputCalendar() {
+  const year = calendarDate.getFullYear();
+  const month = calendarDate.getMonth();
+
+  // ラベル更新
+  document.getElementById('current-month-label').innerText = `${year}年 ${month + 1}月`;
+
+  const grid = document.getElementById('calendar-days-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  // その月の最初の日の曜日と日数
+  const firstDayIndex = new Date(year, month, 1).getDay();
+  const totalDays = new Date(year, month + 1, 0).getDate();
+  const todayStr = new Date().toISOString().split('T')[0];
+
+  // 1日の曜日より前の空セルを追加 (7列のマス目を合わせる)
+  for (let i = 0; i < firstDayIndex; i++) {
+    const emptyCell = document.createElement('div');
+    emptyCell.className = 'calendar-day empty';
+    emptyCell.style.pointerEvents = 'none';
+    emptyCell.style.opacity = '0';
+    grid.appendChild(emptyCell);
+  }
+
+  // 1日から末日まで順番にセルを生成
+  for (let i = 1; i <= totalDays; i++) {
+    const dateStr = formatDateStr(year, month, i);
+    const isToday = dateStr === todayStr;
+    const dayIndex = new Date(year, month, i).getDay();
+    const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
+    const weekdayStr = weekdays[dayIndex];
+
+    const dayEl = createDayCell(i, weekdayStr, dayIndex, dateStr, isToday);
+    grid.appendChild(dayEl);
   }
 }
 
@@ -439,14 +493,14 @@ function formatDateStr(year, month, day) {
   return `${y}-${m}-${dateVal}`;
 }
 
-// カレンダーのセル要素を作成
-function createDayCell(dayNum, weekdayStr, dayIndex, dateStr, isToday = false) {
-  const dayEl = document.createElement('div');
-  dayEl.className = 'calendar-day';
-  if (isToday) dayEl.classList.add('today');
+// 出勤リスト用の1列アイテム要素を作成
+function createWorkListItem(dayNum, weekdayStr, dayIndex, dateStr, isToday, hasWork) {
+  const itemEl = document.createElement('div');
+  itemEl.className = 'work-list-item';
+  if (isToday) itemEl.classList.add('today');
 
-  // タップした時のイベントを追加
-  dayEl.addEventListener('click', () => {
+  // タップした時のイベントを追加 (編集用)
+  itemEl.addEventListener('click', () => {
     openModalWithDate(dateStr);
   });
 
@@ -455,14 +509,12 @@ function createDayCell(dayNum, weekdayStr, dayIndex, dateStr, isToday = false) {
   numEl.className = 'day-number';
   if (dayIndex === 0) numEl.classList.add('sun');
   if (dayIndex === 6) numEl.classList.add('sat');
-  numEl.innerText = `${dayNum} (${weekdayStr})`;
-  dayEl.appendChild(numEl);
+  numEl.innerText = `${dayNum}(${weekdayStr})`;
+  itemEl.appendChild(numEl);
 
-  // その日の勤務データを集計
+  // 勤務データがあれば詳細を表示、無ければ「未登録」を表示
   const dayRecords = records.filter(r => r.date === dateStr);
   if (dayRecords.length > 0) {
-    dayEl.classList.add('has-work');
-
     let dayHours = 0;
     let dayEarnings = 0;
     let dayTips = 0;
@@ -494,7 +546,42 @@ function createDayCell(dayNum, weekdayStr, dayIndex, dateStr, isToday = false) {
     tipsEl.innerText = `C${dayTips.toLocaleString()}`;
     infoEl.appendChild(tipsEl);
 
-    dayEl.appendChild(infoEl);
+    itemEl.appendChild(infoEl);
+  } else {
+    // 勤務データがない場合 (showWorkOnly が false のときだけここに来る)
+    const emptyInfoEl = document.createElement('div');
+    emptyInfoEl.className = 'day-info';
+    emptyInfoEl.style.color = 'var(--text-muted)';
+    emptyInfoEl.innerText = '未出勤';
+    itemEl.appendChild(emptyInfoEl);
+  }
+
+  return itemEl;
+}
+
+// 設定カレンダーのセル要素を作成 (7列マス目用)
+function createDayCell(dayNum, weekdayStr, dayIndex, dateStr, isToday = false) {
+  const dayEl = document.createElement('div');
+  dayEl.className = 'calendar-day';
+  if (isToday) dayEl.classList.add('today');
+
+  // タップした時のイベントを追加
+  dayEl.addEventListener('click', () => {
+    openModalWithDate(dateStr);
+  });
+
+  // 日付の表示
+  const numEl = document.createElement('span');
+  numEl.className = 'day-number';
+  if (dayIndex === 0) numEl.classList.add('sun');
+  if (dayIndex === 6) numEl.classList.add('sat');
+  numEl.innerText = dayNum;
+  dayEl.appendChild(numEl);
+
+  // その日の勤務データがあれば「has-work」を付与
+  const hasWork = records.some(r => r.date === dateStr);
+  if (hasWork) {
+    dayEl.classList.add('has-work');
   }
 
   return dayEl;
@@ -511,7 +598,7 @@ function openModalWithDate(dateStr) {
   // 該当日の既存レコードを探す
   const existingRecord = records.find(r => r.date === dateStr);
   if (existingRecord) {
-    // 既存データをフォームにプリセット
+    // 既存データがある場合はフォームにプリセット
     document.getElementById('input-start-time').value = existingRecord.startTime;
     document.getElementById('input-end-time').value = existingRecord.endTime;
     document.getElementById('input-earnings').value = existingRecord.earnings;
