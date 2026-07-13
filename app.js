@@ -89,6 +89,11 @@ function initEventListeners() {
     calendarDate.setMonth(calendarDate.getMonth() + 1);
     renderCalendar();
   });
+
+  // ページ更新ボタン
+  document.getElementById('refresh-btn').addEventListener('click', () => {
+    window.location.reload();
+  });
 }
 
 // 勤務時間の計算 (開始・終了時間から時間数を算出。深夜またぎに対応)
