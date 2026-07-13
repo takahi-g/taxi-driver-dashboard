@@ -96,7 +96,7 @@ function initEventListeners() {
   });
 }
 
-// 勤務時間の計算 (開始・終了時間から時間数を算出。深夜またぎに対応)
+// 勤務時間の計算 (開始・終了時間から時間数を算出。深夜またぎに対応し、一律で3時間休憩を引く)
 function calculateHours(start, end) {
   const [startH, startM] = start.split(':').map(Number);
   const [endH, endM] = end.split(':').map(Number);
@@ -108,8 +108,14 @@ function calculateHours(start, end) {
     diffMinutes += 24 * 60; // 24時間分（1440分）を足す
   }
 
+  // 勤務時間を算出
+  const rawHours = diffMinutes / 60;
+  
+  // 3時間の休憩を引く（マイナスにならないよう下限を0にする）
+  const finalHours = Math.max(0, rawHours - 3);
+
   // 小数点第2位まで計算して丸める
-  return Math.round((diffMinutes / 60) * 100) / 100;
+  return Math.round(finalHours * 100) / 100;
 }
 
 // LocalStorage から読み込み
@@ -409,31 +415,23 @@ function createDayCell(dayNum, weekdayStr, dayIndex, dateStr, isToday = false) {
     // 勤務時間
     const hoursEl = document.createElement('span');
     hoursEl.className = 'day-hours';
-    hoursEl.innerText = `${dayHours.toFixed(1)}h`;
+    hoursEl.innerText = `${dayHours.toFixed(1)} 時間`;
     infoEl.appendChild(hoursEl);
 
     // 売上
     const earningsEl = document.createElement('span');
     earningsEl.className = 'day-earnings';
-    earningsEl.innerText = formatCurrencyAbbr(dayEarnings);
+    earningsEl.innerText = `売上: ¥${dayEarnings.toLocaleString()}`;
     infoEl.appendChild(earningsEl);
 
-    // 合計獲得額 (売上 + チップ)
-    const totalEl = document.createElement('span');
-    totalEl.className = 'day-total';
-    totalEl.innerText = formatCurrencyAbbr(dayEarnings + dayTips);
-    infoEl.appendChild(totalEl);
+    // チップ
+    const tipsEl = document.createElement('span');
+    tipsEl.className = 'day-tips';
+    tipsEl.innerText = `チップ: ¥${dayTips.toLocaleString()}`;
+    infoEl.appendChild(tipsEl);
 
     dayEl.appendChild(infoEl);
   }
 
   return dayEl;
-}
-
-// 金額の略称フォーマット表記 (例: 35000 -> 3.5万)
-function formatCurrencyAbbr(amount) {
-  if (amount >= 10000) {
-    return `¥${(amount / 10000).toFixed(1)}万`;
-  }
-  return `¥${amount.toLocaleString()}`;
 }
