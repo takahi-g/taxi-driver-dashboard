@@ -48,8 +48,7 @@ body {
 .app-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
-  position: relative;
+  padding: 1rem 1.5rem 2rem 1.5rem;
 }
 
 /* ヘッダー */
@@ -116,14 +115,18 @@ body {
   letter-spacing: 0.05em;
 }
 
+/* トップバー (バージョン & 更新ボタン) */
+.top-bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
 .version-group {
-  position: absolute;
-  top: 2rem;
-  right: 1.5rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  z-index: 10;
 }
 
 /* ボタン */
@@ -618,7 +621,7 @@ input:focus {
 /* レスポンシブ対応 */
 @media (max-width: 768px) {
   .app-container {
-    padding: 1rem;
+    padding: 0.5rem 1rem 1.5rem 1rem;
   }
   .main-header {
     flex-direction: column;
@@ -627,10 +630,6 @@ input:focus {
   }
   .header-actions {
     width: 100%;
-  }
-  .version-group {
-    top: 1rem;
-    right: 1rem;
   }
   .btn-primary {
     width: 100%;
