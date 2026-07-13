@@ -9,8 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // 初期設定と読み込み
   loadRecords();
   
-  // 設定の読み込み
-  showWorkOnly = localStorage.getItem('taxi_show_work_only') === 'true';
+  // 設定の読み込み (保存情報が無い場合の初期値は true (出勤日のみ表示) とする)
+  const savedShowWorkOnly = localStorage.getItem('taxi_show_work_only');
+  showWorkOnly = savedShowWorkOnly !== null ? savedShowWorkOnly === 'true' : true;
+  
   const workOnlyCheckbox = document.getElementById('setting-work-only');
   if (workOnlyCheckbox) {
     workOnlyCheckbox.checked = showWorkOnly;
