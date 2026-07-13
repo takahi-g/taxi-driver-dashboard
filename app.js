@@ -565,12 +565,12 @@ function toggleWorkDate(dateStr) {
     // すでに登録があれば削除
     state.records.splice(existingIndex, 1);
   } else {
-    // 登録がなければ、デフォルト値 (時間は0) で即時登録
-    const startTime = document.getElementById('input-start-time').value || '';
-    const endTime = document.getElementById('input-end-time').value || '';
-    const earnings = parseInt(document.getElementById('input-earnings').value, 10) || 0;
-    const tips = parseInt(document.getElementById('input-tips').value, 10) || 0;
-    const hours = (startTime && endTime) ? calculateHours(startTime, endTime) : 0;
+    // 登録がなければ、ベースデフォルト値 (開始09:00, 終了04:40) で即時登録
+    const startTime = '09:00';
+    const endTime = '04:40';
+    const earnings = 0;
+    const tips = 0;
+    const hours = calculateHours(startTime, endTime);
     
     const newRecord = {
       id: Date.now().toString(),
@@ -605,9 +605,9 @@ function openModalWithDate(dateStr) {
     document.getElementById('input-earnings').value = existingRecord.earnings;
     document.getElementById('input-tips').value = existingRecord.tips;
   } else {
-    // 新規登録時は入力欄をクリア
-    document.getElementById('input-start-time').value = '';
-    document.getElementById('input-end-time').value = '';
+    // 新規登録時は入力欄をデフォルト値（ベース）に設定
+    document.getElementById('input-start-time').value = '09:00';
+    document.getElementById('input-end-time').value = '04:40';
     document.getElementById('input-earnings').value = '';
     document.getElementById('input-tips').value = '';
   }
