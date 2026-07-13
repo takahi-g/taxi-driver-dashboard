@@ -219,6 +219,8 @@ function formatDateStr(year, month, day) {
   const m = String(d.getMonth() + 1).padStart(2, '0');
   const dateVal = String(d.getDate()).padStart(2, '0');
   return `${y}-${m}-${dateVal}`;
+}
+
 // 日本の祝日判定 (2025〜2027年対応の簡易・正確な判定)
 function isHoliday(year, month, day) {
   // ハッピーマンデー（成人の日: 1月第2月曜, 海の日: 7月第3月曜, 敬老の日: 9月第3月曜, スポーツの日: 10月第2月曜）の計算
