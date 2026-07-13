@@ -849,6 +849,14 @@ input {
   height: 52px;              /* タップしやすい大きさ */
 }
 
+/* iOS Safari 日付・時間入力の特有バグ対策 (親要素を押し広げないように強制) */
+input[type="date"],
+input[type="time"] {
+  min-width: 0;              /* フレックス/グリッドで押し広げるのを防ぐ極めて重要な設定 */
+  -webkit-appearance: none;  /* iOSのデフォルトスタイルを抑える */
+  appearance: none;
+}
+
 input:focus {
   outline: none;
   border-color: var(--border-focus);
@@ -864,9 +872,11 @@ input:focus {
 }
 
 .form-actions .btn {
-  padding: 0.9rem 1.75rem;
+  padding: 0.9rem 1.5rem;    /* 左右パディングを少しスリムにして画面幅に収める */
   font-size: 1.05rem;
   height: 52px;
+  white-space: nowrap;       /* ボタン文字（キャンセルなど）が縦に改行されるのを絶対に防ぐ */
+  flex-shrink: 0;
 }
 
 /* ==========================================================================
