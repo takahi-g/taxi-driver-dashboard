@@ -712,33 +712,27 @@ function createWorkListItem(dayNum, weekdayStr, dayIndex, dateStr, isToday) {
       dayTips += r.tips;
     });
 
-    const infoEl = document.createElement('div');
-    infoEl.className = 'day-info';
-
     // 勤務時間
     const hoursEl = document.createElement('span');
     hoursEl.className = 'day-hours';
     hoursEl.innerText = `${dayHours.toFixed(1)}h`;
-    infoEl.appendChild(hoursEl);
+    itemEl.appendChild(hoursEl);
 
     // 売上
     const earningsEl = document.createElement('span');
     earningsEl.className = 'day-earnings';
     earningsEl.innerText = `¥${dayEarnings.toLocaleString()}`;
-    infoEl.appendChild(earningsEl);
+    itemEl.appendChild(earningsEl);
 
     // チップ (Cの部分だけ緑に色分け)
     const tipsEl = document.createElement('span');
     tipsEl.className = 'day-tips';
     tipsEl.innerHTML = `<span class="tip-c">C</span>${dayTips.toLocaleString()}`;
-    infoEl.appendChild(tipsEl);
-
-    itemEl.appendChild(infoEl);
+    itemEl.appendChild(tipsEl);
   } else {
     // 未登録時のプレースホルダー表示
-    const emptyInfoEl = document.createElement('div');
-    emptyInfoEl.className = 'day-info';
-    emptyInfoEl.style.color = 'var(--text-muted)';
+    const emptyInfoEl = document.createElement('span');
+    emptyInfoEl.className = 'day-status-empty';
     emptyInfoEl.innerText = '未出勤';
     itemEl.appendChild(emptyInfoEl);
   }

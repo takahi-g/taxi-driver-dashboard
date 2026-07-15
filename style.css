@@ -284,11 +284,9 @@ body {
   background-color: rgba(22, 28, 45, 0.85);
   border: 1px solid rgba(245, 176, 65, 0.15);
   border-radius: var(--radius-md);
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
+  display: grid;
+  grid-template-columns: 85px 85px 120px 1fr; /* 日付(85px), 時間(85px), 売上(120px), チップ(1fr) */
   align-items: center;
-  gap: 1.5rem;
   transition: var(--transition-smooth);
   cursor: pointer;
   min-height: 52px;
@@ -321,13 +319,11 @@ body {
   color: #63b3ed;            /* 土曜: 水色 */
 }
 
-.work-list-item .day-info {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 1.25rem;              /* 隙間を微調整 */
-  flex-shrink: 0;
-  white-space: nowrap;
+.work-list-item .day-status-empty {
+  grid-column: 2 / span 3;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  font-weight: 500;
 }
 
 .work-list-item .day-hours {
@@ -979,17 +975,14 @@ input:focus {
   }
   
   .work-list-item {
-    padding: 0.8rem 1rem;      /* タップ領域と余白の拡大 */
+    padding: 0.8rem 0.75rem;   /* 左右のパディングを適度に縮小して領域を確保 */
     min-height: 52px;
-    gap: 0.8rem;
+    display: grid;
+    grid-template-columns: 75px 70px 105px 1fr; /* 日付(75px), 時間(70px), 売上(105px), チップ(1fr) */
   }
   
   .work-list-item .day-number {
     font-size: 1.25rem;        /* 1.15rem から 1.25rem へ拡大 */
-  }
-  
-  .work-list-item .day-info {
-    gap: 0.7rem;               /* 横幅を節約するための隙間調整 */
   }
   
   .work-list-item .day-hours {
