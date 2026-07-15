@@ -280,12 +280,12 @@ body {
 }
 
 .work-list-item {
-  padding: 0.8rem 1.5rem 0.8rem 1.25rem; /* 右パディングを広げて見切れを防ぐ */
+  padding: 0.8rem 1.25rem;
   background-color: rgba(22, 28, 45, 0.85);
   border: 1px solid rgba(245, 176, 65, 0.15);
   border-radius: var(--radius-md);
   display: grid;
-  grid-template-columns: 90px 90px 145px 95px; /* 文字サイズ拡大に伴い各列幅を拡大 */
+  grid-template-columns: 85px 80px 125px 80px; /* PC版も無駄のない列幅でスリム化 */
   align-items: center;
   transition: var(--transition-smooth);
   cursor: pointer;
@@ -512,7 +512,7 @@ body {
 
 .accordion-item-info {
   display: grid;
-  grid-template-columns: 90px 90px 145px 95px; /* 出勤リストの列幅と完全に揃える */
+  grid-template-columns: 85px 80px 125px 80px; /* 出勤リストの列幅と完全に揃えてスリム化 */
   align-items: center;
   white-space: nowrap;
 }
@@ -993,7 +993,7 @@ input:focus {
     padding: 0.8rem 0.6rem;
     min-height: 52px;
     display: grid;
-    grid-template-columns: 75px 75px 120px 80px; /* カラム幅を拡大 */
+    grid-template-columns: 70px 65px 95px 65px; /* アコーディオンと完全に揃えてスリム化 */
   }
   
   .work-list-item .day-number {
@@ -1019,7 +1019,7 @@ input:focus {
 
   .accordion-item-info {
     display: grid;
-    grid-template-columns: 75px 75px 120px 80px; /* 出勤リストのモバイル幅と完全に揃える */
+    grid-template-columns: 70px 65px 95px 65px; /* モバイル版アコーディオンもスリムに揃える */
     align-items: center;
   }
 
@@ -1058,7 +1058,7 @@ input:focus {
   margin-top: 0.5rem;
   display: flex;
   gap: 0.35rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;         /* 改行（折り返し）を強制禁止 */
   width: 100%;
 }
 
@@ -1066,7 +1066,7 @@ input:focus {
   background-color: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--color-border);
   color: var(--color-text-secondary);
-  padding: 0.4rem 0.6rem;
+  padding: 0.4rem 0.25rem;   /* 横の余白を少し縮小して文字収まりを良くする */
   border-radius: var(--radius-sm);
   font-size: 1.1rem;         /* 0.85rem から 1.1rem へ拡大 */
   font-weight: 600;
@@ -1074,7 +1074,7 @@ input:focus {
   transition: all var(--transition-fast);
   flex: 1;
   text-align: center;
-  min-width: 54px;
+  min-width: 0;              /* 固定幅制限をなくして1行に等幅で収める */
   height: 44px;              /* 34px から 44px へ拡大し、タップしやすく調整 */
   display: flex;
   align-items: center;
