@@ -280,12 +280,12 @@ body {
 }
 
 .work-list-item {
-  padding: 0.8rem 1.25rem;
+  padding: 0.8rem 1.5rem 0.8rem 1.25rem; /* 右パディングを広げて見切れを防ぐ */
   background-color: rgba(22, 28, 45, 0.85);
   border: 1px solid rgba(245, 176, 65, 0.15);
   border-radius: var(--radius-md);
   display: grid;
-  grid-template-columns: 85px 85px 120px 1fr; /* 日付(85px), 時間(85px), 売上(120px), チップ(1fr) */
+  grid-template-columns: 85px 85px 120px 85px; /* チップも固定幅にして均等配置 */
   align-items: center;
   transition: var(--transition-smooth);
   cursor: pointer;
@@ -309,6 +309,7 @@ body {
   font-weight: 700;
   color: #ffffff;            /* 平日: 白 */
   flex-shrink: 0;
+  justify-self: start;       /* 左寄せ */
 }
 
 .work-list-item .day-number.sun {
@@ -324,6 +325,7 @@ body {
   color: var(--text-muted);
   font-size: 1.1rem;
   font-weight: 500;
+  justify-self: start;       /* 左寄せ */
 }
 
 .work-list-item .day-hours {
@@ -333,18 +335,21 @@ body {
   background-color: rgba(230, 126, 34, 0.15);
   padding: 0.15rem 0.45rem;
   border-radius: var(--radius-sm);
+  justify-self: center;      /* 時間バッジはセル中央揃え */
 }
 
 .work-list-item .day-earnings {
   font-size: 1.15rem;        /* 0.95rem から 1.15rem へ拡大 */
   font-weight: 700;
   color: var(--color-req-earnings);
+  justify-self: center;      /* 売上はセル中央揃え */
 }
 
 .work-list-item .day-tips {
   font-size: 1.1rem;         /* 0.95rem から 1.1rem へ拡大 */
   font-weight: 600;
   color: #ffffff;            /* 数字は白のまま */
+  justify-self: center;      /* チップはセル中央揃え */
 }
 
 .work-list-item .day-tips .tip-c {
@@ -975,10 +980,10 @@ input:focus {
   }
   
   .work-list-item {
-    padding: 0.8rem 0.75rem;   /* 左右のパディングを適度に縮小して領域を確保 */
+    padding: 0.8rem 1rem 0.8rem 0.75rem;   /* 右パディングを1remに広げて見切れを防ぐ */
     min-height: 52px;
     display: grid;
-    grid-template-columns: 75px 70px 105px 1fr; /* 日付(75px), 時間(70px), 売上(105px), チップ(1fr) */
+    grid-template-columns: 75px 65px 95px 65px; /* モバイルも全て固定幅にし、チップ(C)の見切れを防ぐ */
   }
   
   .work-list-item .day-number {
