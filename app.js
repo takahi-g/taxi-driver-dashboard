@@ -161,6 +161,16 @@ function initEventListeners() {
       if (activePane) {
         activePane.classList.remove('pane-hidden');
       }
+
+      // 「勤務を記録する」ボタンの表示制御 (カレンダータブのみ表示)
+      const addBtn = document.getElementById('add-record-btn');
+      if (addBtn) {
+        if (tab.dataset.pane === 'pane-calendar') {
+          addBtn.style.display = 'inline-flex';
+        } else {
+          addBtn.style.display = 'none';
+        }
+      }
     });
   });
 
@@ -591,7 +601,7 @@ function updateHistoryAccordion() {
         <span class="acc-date">${formattedDate}</span>
         <span class="acc-hours">${r.hours.toFixed(1)}h</span>
         <span class="acc-earnings">¥${r.earnings.toLocaleString()}</span>
-        <span class="acc-tips">C${r.tips.toLocaleString()}</span>
+        <span class="acc-tips"><span class="tip-c">C</span>${r.tips.toLocaleString()}</span>
       `;
 
       // 編集・削除ボタン
