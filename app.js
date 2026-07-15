@@ -603,30 +603,12 @@ function updateHistoryAccordion() {
         <span class="acc-tips"><span class="tip-c">C</span>${r.tips.toLocaleString()}</span>
       `;
 
-      // 編集・削除ボタン
-      const actionsEl = document.createElement('div');
-      actionsEl.className = 'accordion-item-actions';
-      actionsEl.innerHTML = `
-        <button class="btn-edit-icon" title="編集">
-          <i data-lucide="pencil"></i>
-        </button>
-        <button class="btn-danger-icon" title="削除">
-          <i data-lucide="trash-2"></i>
-        </button>
-      `;
-
-      actionsEl.querySelector('.btn-edit-icon').addEventListener('click', (e) => {
-        e.stopPropagation();
+      // 行をタップした時は登録モーダルを開く (編集)
+      item.addEventListener('click', () => {
         openModalWithDate(r.date);
       });
 
-      actionsEl.querySelector('.btn-danger-icon').addEventListener('click', (e) => {
-        e.stopPropagation();
-        deleteRecord(r.id);
-      });
-
       item.appendChild(infoEl);
-      item.appendChild(actionsEl);
       content.appendChild(item);
     });
 
@@ -857,6 +839,7 @@ function toggleWorkDate(dateStr) {
 function openModalWithDate(dateStr) {
   const recordModal = document.getElementById('record-modal');
   const dateInput = document.getElementById('input-date');
+  const deleteBtn = document.getElementById('delete-record-btn');
   
   dateInput.value = dateStr;
 
@@ -869,15 +852,37 @@ function openModalWithDate(dateStr) {
     // 金額やチップが0の場合は空文字を設定し、placeholder="0" に任せる（消す手間を削減）
     document.getElementById('input-earnings').value = existingRecord.earnings === 0 ? '' : existingRecord.earnings;
     document.getElementById('input-tips').value = existingRecord.tips === 0 ? '' : existingRecord.tips;
+
+    // 既存レコードがあるため、削除ボタンを表示
+    if (deleteBtn) {
+      deleteBtn.style.display = 'flex';
+      // 既存のイベントリスナーをクリアするためにクローンに差し替え
+      const newDeleteBtn = deleteBtn.cloneNode(true);
+      deleteBtn.parentNode.replaceChild(newDeleteBtn, deleteBtn);
+      newDeleteBtn.addEventListener('click', () => {
+        if (confirm('この日の勤務記録を削除してもよろしいですか？')) {
+          state.records = state.records.filter(r => r.id !== existingRecord.id);
+          saveRecords();
+          updateUI();
+          recordModal.classList.remove('show');
+        }
+      });
+    }
   } else {
     // 新規登録時は入力欄をデフォルト値（ベース）に設定
     document.getElementById('input-start-time').value = '09:00';
     document.getElementById('input-end-time').value = '04:40';
     document.getElementById('input-earnings').value = '';
     document.getElementById('input-tips').value = '';
+
+    // 新規レコード時は削除ボタンを非表示にする
+    if (deleteBtn) {
+      deleteBtn.style.display = 'none';
+    }
   }
 
   recordModal.classList.add('show');
+  initializeIcons(); // クローンしたボタンのアイコンをロードするためにアイコン初期化を実行
 }
 
 // Lucideアイコンの非同期ロード待機＆初期化関数

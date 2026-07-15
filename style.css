@@ -499,11 +499,12 @@ body {
 
 .accordion-item {
   display: grid;
-  grid-template-columns: 1fr auto; /* 左側に数値情報、右側に編集・削除ボタン */
+  grid-template-columns: 1fr; /* ボタン撤去に伴い1カラムに簡素化 */
   align-items: center;
-  padding: 0.75rem 1.25rem;
+  padding: 0.85rem 1.25rem;
   border-top: 1px solid var(--border-color);
   transition: var(--transition-smooth);
+  cursor: pointer;            /* タップ可能であることを示す */
 }
 
 .accordion-item:hover {
@@ -1012,9 +1013,9 @@ input:focus {
 
   /* モバイル画面用：アコーディオン勤務履歴の整列と文字サイズ拡大 */
   .accordion-item {
-    padding: 0.75rem 0.4rem;
+    padding: 0.85rem 0.6rem;
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr;
   }
 
   .accordion-item-info {
@@ -1035,10 +1036,6 @@ input:focus {
   .acc-earnings, 
   .acc-tips {
     font-size: 1.25rem;        /* 1.25rem に統一 */
-  }
-
-  .accordion-item-actions {
-    gap: 0.25rem;             /* ボタン（編集・削除）間の余白を狭く */
   }
 }
 
