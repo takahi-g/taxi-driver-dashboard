@@ -202,6 +202,50 @@ function initEventListeners() {
       });
     });
   }
+
+  // 「今日のチップ」クイック加算 (カレンダー画面上部のウィジェット用)
+  const quickTipTodayBtns = document.querySelectorAll('.btn-quick-tip-today');
+  if (quickTipTodayBtns.length > 0) {
+    quickTipTodayBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const val = btn.dataset.val;
+        
+        const today = new Date();
+        const todayStr = formatDateStr(today.getFullYear(), today.getMonth(), today.getDate());
+        
+        let todayRecord = state.records.find(r => r.date === todayStr);
+        
+        // 未出勤（レコードなし）の場合は、ベースデフォルト値 (09:00〜04:40) で即時登録
+        if (!todayRecord) {
+          const startTime = '09:00';
+          const endTime = '04:40';
+          const hours = calculateHours(startTime, endTime);
+          todayRecord = {
+            id: Date.now().toString(),
+            date: todayStr,
+            startTime,
+            endTime,
+            hours,
+            earnings: 0,
+            tips: 0
+          };
+          state.records.push(todayRecord);
+          sortRecords();
+        }
+
+        if (val === 'clear') {
+          todayRecord.tips = 0;
+        } else {
+          const addVal = parseInt(val, 10);
+          todayRecord.tips = (todayRecord.tips || 0) + addVal;
+        }
+
+        saveRecords();
+        updateUI();
+      });
+    });
+  }
 }
 
 // ----------------------------------------------------
@@ -438,7 +482,27 @@ function updateUI() {
   updateHistoryAccordion();
   renderWorkList();
   renderInputCalendar();
+  updateQuickTipWidget();
   initializeIcons();
+}
+
+// 今日のチップ用クイック入力ウィジェットの表示更新
+function updateQuickTipWidget() {
+  const dateEl = document.getElementById('quick-tip-target-date');
+  const valEl = document.getElementById('quick-tip-current-val');
+  if (!dateEl || !valEl) return;
+
+  const today = new Date();
+  const todayStr = formatDateStr(today.getFullYear(), today.getMonth(), today.getDate());
+  
+  // 今日の日付を表示用にフォーマット
+  dateEl.innerText = formatLocalDate(todayStr);
+
+  // 今日のチップ総額を取得
+  const todayRecord = state.records.find(r => r.date === todayStr);
+  const currentTip = todayRecord ? (todayRecord.tips || 0) : 0;
+  
+  valEl.innerText = `¥${currentTip.toLocaleString()}`;
 }
 
 // 主要集計数値の計算と表示

@@ -21,13 +21,13 @@
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.321.0/dist/umd/lucide.min.js"></script>
   
   <!-- スタイルシートの読み込み (キャッシュ対策用パラメータ付与) -->
-  <link rel="stylesheet" href="style.css?v=2026.07.15.1820">
+  <link rel="stylesheet" href="style.css?v=2026.07.15.1825">
 </head>
 <body>
   <div class="app-container">
     <!-- トップバー (バージョン & 更新ボタン) -->
     <div class="top-bar">
-      <span class="version-badge">v2026.07.15.1820</span>
+      <span class="version-badge">v2026.07.15.1825</span>
       <button id="refresh-btn" class="btn-icon" title="ページを更新"><i data-lucide="refresh-cw"></i></button>
     </div>
 
@@ -51,6 +51,26 @@
       
       <!-- ペイン1: カレンダー (出勤リスト表示) -->
       <div id="pane-calendar" class="tab-pane">
+        <!-- クイックチップ加算セクション -->
+        <section class="quick-tip-section card" style="margin-bottom: 1rem; padding: 1rem 1.25rem;">
+          <div class="card-header" style="margin-bottom: 0.5rem; justify-content: flex-start; gap: 0.5rem;">
+            <h2><i data-lucide="coins"></i> 今日のチップを素早く記録</h2>
+          </div>
+          <div class="quick-tip-body" style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span id="quick-tip-target-date" style="font-size: 0.95rem; font-weight: 700; color: var(--color-primary);">--/--(曜)</span>
+              <span style="font-size: 0.95rem; color: var(--text-muted);">現在のチップ: <strong id="quick-tip-current-val" style="color: #fff; font-size: 1.15rem; font-weight: 800;">¥0</strong></span>
+            </div>
+            <div class="tip-quick-actions" style="margin-top: 0.25rem;">
+              <button type="button" class="btn-quick-tip-today btn-quick-tip" data-val="10">+10</button>
+              <button type="button" class="btn-quick-tip-today btn-quick-tip" data-val="100">+100</button>
+              <button type="button" class="btn-quick-tip-today btn-quick-tip" data-val="500">+500</button>
+              <button type="button" class="btn-quick-tip-today btn-quick-tip" data-val="1000">+1000</button>
+              <button type="button" class="btn-quick-tip-today btn-quick-tip btn-quick-clear" data-val="clear">クリア</button>
+            </div>
+          </div>
+        </section>
+
         <section class="work-list-section card">
           <div class="card-header">
             <h2><i data-lucide="check-square"></i> 出勤記録リスト</h2>
@@ -253,6 +273,6 @@
   </div>
 
   <!-- アプリケーションコードの読み込み (キャッシュ対策用パラメータ付与) -->
-  <script src="app.js?v=2026.07.15.1820"></script>
+  <script src="app.js?v=2026.07.15.1825"></script>
 </body>
 </html>
