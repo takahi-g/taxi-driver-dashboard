@@ -727,10 +727,10 @@ function createWorkListItem(dayNum, weekdayStr, dayIndex, dateStr, isToday) {
     earningsEl.innerText = `¥${dayEarnings.toLocaleString()}`;
     infoEl.appendChild(earningsEl);
 
-    // チップ
+    // チップ (Cの部分だけ緑に色分け)
     const tipsEl = document.createElement('span');
     tipsEl.className = 'day-tips';
-    tipsEl.innerText = `C${dayTips.toLocaleString()}`;
+    tipsEl.innerHTML = `<span class="tip-c">C</span>${dayTips.toLocaleString()}`;
     infoEl.appendChild(tipsEl);
 
     itemEl.appendChild(infoEl);

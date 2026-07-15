@@ -348,7 +348,13 @@ body {
 .work-list-item .day-tips {
   font-size: 1.1rem;         /* 0.95rem から 1.1rem へ拡大 */
   font-weight: 600;
-  color: var(--color-req-tips);
+  color: #ffffff;            /* 数字は白のまま */
+}
+
+.work-list-item .day-tips .tip-c {
+  color: #48bb78;            /* 濃すぎない緑 (ミントグリーン) */
+  font-weight: 700;
+  margin-right: 0.15rem;
 }
 
 /* ==========================================================================
