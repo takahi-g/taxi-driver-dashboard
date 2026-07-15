@@ -21,13 +21,13 @@
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.321.0/dist/umd/lucide.min.js"></script>
   
   <!-- スタイルシートの読み込み (キャッシュ対策用パラメータ付与) -->
-  <link rel="stylesheet" href="style.css?v=2026.07.13.1815">
+  <link rel="stylesheet" href="style.css?v=2026.07.15.1820">
 </head>
 <body>
   <div class="app-container">
     <!-- トップバー (バージョン & 更新ボタン) -->
     <div class="top-bar">
-      <span class="version-badge">v2026.07.13.1815</span>
+      <span class="version-badge">v2026.07.15.1820</span>
       <button id="refresh-btn" class="btn-icon" title="ページを更新"><i data-lucide="refresh-cw"></i></button>
     </div>
 
@@ -235,6 +235,13 @@
           <div class="form-group">
             <label for="input-tips">チップ額 (円)</label>
             <input type="number" id="input-tips" min="0" placeholder="0">
+            <div class="tip-quick-actions">
+              <button type="button" class="btn-quick-tip" data-val="10">+10</button>
+              <button type="button" class="btn-quick-tip" data-val="100">+100</button>
+              <button type="button" class="btn-quick-tip" data-val="500">+500</button>
+              <button type="button" class="btn-quick-tip" data-val="1000">+1000</button>
+              <button type="button" class="btn-quick-tip btn-quick-clear" data-val="clear">クリア</button>
+            </div>
           </div>
         </div>
         <div class="form-actions">
@@ -246,6 +253,6 @@
   </div>
 
   <!-- アプリケーションコードの読み込み (キャッシュ対策用パラメータ付与) -->
-  <script src="app.js?v=2026.07.13.1815"></script>
+  <script src="app.js?v=2026.07.15.1820"></script>
 </body>
 </html>

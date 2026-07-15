@@ -183,6 +183,25 @@ function initEventListeners() {
   if (pasteRestoreBtn) {
     pasteRestoreBtn.addEventListener('click', pasteRestore);
   }
+
+  // チップ額のクイック加算
+  const quickTipBtns = document.querySelectorAll('.btn-quick-tip');
+  const tipsInput = document.getElementById('input-tips');
+  if (tipsInput && quickTipBtns.length > 0) {
+    quickTipBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const val = btn.dataset.val;
+        if (val === 'clear') {
+          tipsInput.value = '';
+        } else {
+          const currentVal = parseInt(tipsInput.value, 10) || 0;
+          const addVal = parseInt(val, 10);
+          tipsInput.value = currentVal + addVal;
+        }
+      });
+    });
+  }
 }
 
 // ----------------------------------------------------
