@@ -640,7 +640,7 @@ function renderWorkList() {
   const todayStr = new Date().toISOString().split('T')[0];
   let renderedCount = 0;
 
-  for (let i = 1; i <= totalDays; i++) {
+  for (let i = totalDays; i >= 1; i--) {
     const dateStr = formatDateStr(year, month, i);
     const hasWork = state.records.some(r => r.date === dateStr);
     
