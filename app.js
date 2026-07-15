@@ -346,7 +346,7 @@ function isHoliday(year, month, day) {
 }
 
 
-// 勤務時間の計算 (深夜またぎに対応し、一律で3時間休憩を引く)
+// 勤務時間の計算 (深夜またぎに対応し、休憩時間を引かずにそのまま算出)
 function calculateHours(start, end) {
   const [startH, startM] = start.split(':').map(Number);
   const [endH, endM] = end.split(':').map(Number);
@@ -357,9 +357,7 @@ function calculateHours(start, end) {
   }
 
   const rawHours = diffMinutes / 60;
-  const finalHours = Math.max(0, rawHours - 3); // 3時間休憩を減算
-
-  return Math.round(finalHours * 100) / 100; // 小数点第2位までに丸める
+  return Math.round(rawHours * 100) / 100; // 小数点第2位までに丸める
 }
 
 // ----------------------------------------------------
@@ -379,11 +377,12 @@ function loadRecords() {
           date: r.date || new Date().toISOString().split('T')[0],
           startTime: r.startTime || '',
           endTime: r.endTime || '',
-          hours: (r.hours !== undefined && r.hours !== null && !isNaN(r.hours)) ? Number(r.hours) : 0,
+          hours: (r.startTime && r.endTime) ? calculateHours(r.startTime, r.endTime) : 0,
           earnings: (r.earnings !== undefined && r.earnings !== null && !isNaN(r.earnings)) ? Number(r.earnings) : 0,
           tips: (r.tips !== undefined && r.tips !== null && !isNaN(r.tips)) ? Number(r.tips) : 0
         }));
         sortRecords();
+        saveRecords(); // 計算式アップデートをローカルに即時反映して保存
       }
     } catch (e) {
       console.error("データの読み込み・サニタイズに失敗しました:", e);
