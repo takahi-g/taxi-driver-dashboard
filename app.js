@@ -527,8 +527,9 @@ function updateMetrics() {
     totalTips += r.tips;
   });
 
-  // 売上のみでの平均時間売上計算（チップを含めない）
-  const averageHourly = totalHours > 0 ? Math.round(totalEarnings / totalHours) : 0;
+  // 売上のみでの平均時間売上計算（チップを含めない、各勤務から休憩3時間を引いた実働時間ベースで計算）
+  const totalNetHours = Math.max(0, totalHours - (totalDays * 3));
+  const averageHourly = totalNetHours > 0 ? Math.round(totalEarnings / totalNetHours) : 0;
 
   document.getElementById('val-days').innerHTML = `${totalDays} <span class="unit">日</span>`;
   document.getElementById('val-hours').innerHTML = `${totalHours.toFixed(1)} <span class="unit">時間</span>`;
