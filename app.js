@@ -1,10 +1,9 @@
-// アプリケーションの状態を一元管理
 const state = {
   records: [],
   calendarDate: new Date(),
   showWorkOnly: false,
-  filterYear: 'all',
-  filterMonth: 'all'
+  filterYear: new Date().getFullYear().toString(), // 初期表示は現在の年
+  filterMonth: String(new Date().getMonth() + 1).padStart(2, '0') // 初期表示は現在の月
 };
 
 // DOMの読み込み完了時
@@ -534,8 +533,12 @@ function updateQuickTipWidget() {
 function updateMetrics() {
   // 年フィルターの選択肢を動的に生成
   const filterYearSelect = document.getElementById('filter-year');
+  const filterMonthSelect = document.getElementById('filter-month');
+  
   if (filterYearSelect) {
     const yearsSet = new Set();
+    // 常に現在の年を選択肢に追加しておく
+    yearsSet.add(new Date().getFullYear().toString());
     state.records.forEach(r => {
       const year = r.date.split('-')[0];
       yearsSet.add(year);
@@ -558,10 +561,18 @@ function updateMetrics() {
     if (sortedYears.includes(currentSelected)) {
       filterYearSelect.value = currentSelected;
       state.filterYear = currentSelected;
-    } else {
+    } else if (currentSelected === 'all') {
       filterYearSelect.value = 'all';
       state.filterYear = 'all';
+    } else {
+      // 初期化等で現在の年が入っている場合
+      filterYearSelect.value = sortedYears[0];
+      state.filterYear = sortedYears[0];
     }
+  }
+
+  if (filterMonthSelect) {
+    filterMonthSelect.value = state.filterMonth;
   }
 
   // フィルター処理
