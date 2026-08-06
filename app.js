@@ -725,6 +725,12 @@ function renderWorkList() {
   const workDaysCount = state.records.filter(r => r.date.startsWith(targetPrefix)).length;
   document.getElementById('work-days-count').innerText = `${workDaysCount} 日出勤`;
 
+  // 表示中の年月タイトル表示を更新
+  const monthTitleEl = document.getElementById('calendar-month-title');
+  if (monthTitleEl) {
+    monthTitleEl.innerText = `${year}年 ${month + 1}月`;
+  }
+
   if (renderedCount === 0) {
     const emptyEl = document.createElement('div');
     emptyEl.className = 'empty-calendar-message';

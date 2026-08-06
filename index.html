@@ -21,13 +21,13 @@
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.321.0/dist/umd/lucide.min.js"></script>
   
   <!-- スタイルシートの読み込み (キャッシュ対策用パラメータ付与) -->
-  <link rel="stylesheet" href="style.css?v=2026.08.06.13:55.45">
+  <link rel="stylesheet" href="style.css?v=2026.08.06.14:01.30">
 </head>
 <body>
   <div class="app-container">
     <!-- トップバー (バージョン & 更新ボタン) -->
     <div class="top-bar">
-      <span class="version-badge">v2026.08.06.13:55.45</span>
+      <span class="version-badge">v2026.08.06.14:01.30</span>
       <button id="refresh-btn" class="btn-icon" title="ページを更新"><i data-lucide="refresh-cw"></i></button>
     </div>
 
@@ -72,9 +72,13 @@
         </section>
 
         <section class="work-list-section card">
-          <div class="card-header">
-            <h2><i data-lucide="check-square"></i> 出勤記録リスト</h2>
-            <span class="badge" id="work-days-count">0 日出勤</span>
+          <div class="card-header" style="flex-direction: column; align-items: flex-start; gap: 0.5rem; padding: 0.85rem 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+              <h2 style="margin: 0;"><i data-lucide="check-square"></i> 出勤記録リスト</h2>
+              <span class="badge" id="work-days-count" style="font-size: 1.1rem; font-weight: 700;">0 日出勤</span>
+            </div>
+            <!-- 現在表示中の年月表示を追加 -->
+            <div id="calendar-month-title" style="font-size: 1.45rem; font-weight: 800; color: var(--color-primary); margin-top: 0.25rem;">----年 --月</div>
           </div>
           <div class="calendar-grid-wrapper">
             <div id="work-list-container" class="work-list-container">
@@ -309,6 +313,6 @@
   </div>
 
   <!-- アプリケーションコードの読み込み (キャッシュ対策用パラメータ付与) -->
-  <script src="app.js?v=2026.08.06.13:55.45"></script>
+  <script src="app.js?v=2026.08.06.14:01.30"></script>
 </body>
 </html>
