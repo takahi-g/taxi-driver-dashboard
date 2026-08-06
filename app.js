@@ -2,7 +2,9 @@
 const state = {
   records: [],
   calendarDate: new Date(),
-  showWorkOnly: false
+  showWorkOnly: false,
+  filterYear: 'all',
+  filterMonth: 'all'
 };
 
 // DOMの読み込み完了時
@@ -254,6 +256,20 @@ function initEventListeners() {
         saveRecords();
         updateUI();
       });
+    });
+  }
+
+  // 集計期間フィルターのイベント登録
+  const filterYear = document.getElementById('filter-year');
+  const filterMonth = document.getElementById('filter-month');
+  if (filterYear && filterMonth) {
+    filterYear.addEventListener('change', () => {
+      state.filterYear = filterYear.value;
+      updateUI();
+    });
+    filterMonth.addEventListener('change', () => {
+      state.filterMonth = filterMonth.value;
+      updateUI();
     });
   }
 }
@@ -516,12 +532,54 @@ function updateQuickTipWidget() {
 
 // 主要集計数値の計算と表示
 function updateMetrics() {
-  const totalDays = state.records.length;
+  // 年フィルターの選択肢を動的に生成
+  const filterYearSelect = document.getElementById('filter-year');
+  if (filterYearSelect) {
+    const yearsSet = new Set();
+    state.records.forEach(r => {
+      const year = r.date.split('-')[0];
+      yearsSet.add(year);
+    });
+    const sortedYears = Array.from(yearsSet).sort().reverse();
+    
+    // 現在選択されている値を退避
+    const currentSelected = state.filterYear;
+    
+    // オプション再生成
+    filterYearSelect.innerHTML = '<option value="all">すべて</option>';
+    sortedYears.forEach(year => {
+      const opt = document.createElement('option');
+      opt.value = year;
+      opt.innerText = `${year}年`;
+      filterYearSelect.appendChild(opt);
+    });
+    
+    // 値を書き戻す (もし元の選択肢が消えてたら all にする)
+    if (sortedYears.includes(currentSelected)) {
+      filterYearSelect.value = currentSelected;
+      state.filterYear = currentSelected;
+    } else {
+      filterYearSelect.value = 'all';
+      state.filterYear = 'all';
+    }
+  }
+
+  // フィルター処理
+  const filteredRecords = state.records.filter(r => {
+    const [year, month] = r.date.split('-');
+    
+    const matchesYear = state.filterYear === 'all' || year === state.filterYear;
+    const matchesMonth = state.filterMonth === 'all' || month === state.filterMonth;
+    
+    return matchesYear && matchesMonth;
+  });
+
+  const totalDays = filteredRecords.length;
   let totalHours = 0;
   let totalEarnings = 0;
   let totalTips = 0;
 
-  state.records.forEach(r => {
+  filteredRecords.forEach(r => {
     totalHours += r.hours;
     totalEarnings += r.earnings;
     totalTips += r.tips;
@@ -536,7 +594,7 @@ function updateMetrics() {
   document.getElementById('val-earnings').innerText = `¥${totalEarnings.toLocaleString()}`;
   document.getElementById('val-tips').innerText = `¥${totalTips.toLocaleString()}`;
   document.getElementById('val-hourly').innerHTML = `¥${averageHourly.toLocaleString()}<span class="unit">/h</span>`;
-  document.getElementById('record-count').innerText = `${totalDays} 件の記録`;
+  document.getElementById('record-count').innerText = `${state.records.length} 件の記録`;
 }
 
 // 月別アコーディオン履歴の描画

@@ -21,13 +21,13 @@
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.321.0/dist/umd/lucide.min.js"></script>
   
   <!-- スタイルシートの読み込み (キャッシュ対策用パラメータ付与) -->
-  <link rel="stylesheet" href="style.css?v=2026.07.23.09:40.23">
+  <link rel="stylesheet" href="style.css?v=2026.08.06.13:52.30">
 </head>
 <body>
   <div class="app-container">
     <!-- トップバー (バージョン & 更新ボタン) -->
     <div class="top-bar">
-      <span class="version-badge">v2026.07.23.09:40.23</span>
+      <span class="version-badge">v2026.08.06.13:52.30</span>
       <button id="refresh-btn" class="btn-icon" title="ページを更新"><i data-lucide="refresh-cw"></i></button>
     </div>
 
@@ -86,6 +86,36 @@
 
       <!-- ペイン2: ダッシュボード (集計数値 & 履歴) -->
       <div id="pane-dashboard" class="tab-pane pane-hidden">
+        <!-- 集計期間フィルター (案2: 年・月選択ダイヤル) -->
+        <section class="filter-section card" style="margin-bottom: 1rem; padding: 1rem 1.25rem;">
+          <div style="display: flex; gap: 0.75rem; align-items: center; width: 100%;">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 0.35rem;">
+              <label for="filter-year" style="font-size: 1.1rem; font-weight: 700; color: var(--color-primary);">年</label>
+              <select id="filter-year" style="width: 100%; height: 48px; font-size: 1.35rem; font-weight: 700; background-color: rgba(22, 28, 45, 0.85); border: 1px solid var(--color-border); border-radius: var(--radius-sm); color: #fff; padding: 0 0.5rem;">
+                <option value="all">すべて</option>
+              </select>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 0.35rem;">
+              <label for="filter-month" style="font-size: 1.1rem; font-weight: 700; color: var(--color-primary);">月</label>
+              <select id="filter-month" style="width: 100%; height: 48px; font-size: 1.35rem; font-weight: 700; background-color: rgba(22, 28, 45, 0.85); border: 1px solid var(--color-border); border-radius: var(--radius-sm); color: #fff; padding: 0 0.5rem;">
+                <option value="all">すべて</option>
+                <option value="01">1月</option>
+                <option value="02">2月</option>
+                <option value="03">3月</option>
+                <option value="04">4月</option>
+                <option value="05">5月</option>
+                <option value="06">6月</option>
+                <option value="07">7月</option>
+                <option value="08">8月</option>
+                <option value="09">9月</option>
+                <option value="10">10月</option>
+                <option value="11">11月</option>
+                <option value="12">12月</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
         <!-- サマリーカードセクション -->
         <section class="summary-section">
           <div class="summary-card" id="card-days">
@@ -279,6 +309,6 @@
   </div>
 
   <!-- アプリケーションコードの読み込み (キャッシュ対策用パラメータ付与) -->
-  <script src="app.js?v=2026.07.23.09:40.23"></script>
+  <script src="app.js?v=2026.08.06.13:52.30"></script>
 </body>
 </html>
