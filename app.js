@@ -300,6 +300,15 @@ function formatLocalDate(dateStr) {
   return `${month}/${day} (${dayName})`;
 }
 
+// 日付文字列 (YYYY-MM-DD) を "MM/DD" に安全に変換 (アコーディオンの被り防止用)
+function formatLocalDateShort(dateStr) {
+  const dateObj = parseLocalDate(dateStr);
+  if (isNaN(dateObj.getTime())) return dateStr;
+  const month = dateObj.getMonth() + 1;
+  const day = dateObj.getDate();
+  return `${month}/${day}`;
+}
+
 // 年、月、日から "YYYY-MM-DD" 文字列を生成
 function formatDateStr(year, month, day) {
   const d = new Date(year, month, day);
@@ -665,7 +674,7 @@ function updateHistoryAccordion() {
       const infoEl = document.createElement('div');
       infoEl.className = 'accordion-item-info';
       
-      const formattedDate = formatLocalDate(r.date);
+      const formattedDate = formatLocalDateShort(r.date);
       infoEl.innerHTML = `
         <span class="acc-date">${formattedDate}</span>
         <span class="acc-hours">${r.hours.toFixed(1)}h</span>

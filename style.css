@@ -531,7 +531,7 @@ body {
 
 .accordion-item-info {
   display: grid;
-  grid-template-columns: 85px 80px 125px 80px; /* 出勤リストの列幅と完全に揃えてスリム化 */
+  grid-template-columns: 75px 80px 130px 80px; /* 日付幅を75pxに少し詰め、被りを防止 */
   align-items: center;
   white-space: nowrap;
 }
@@ -1038,7 +1038,7 @@ input:focus {
 
   .accordion-item-info {
     display: grid;
-    grid-template-columns: 70px 65px 95px 65px; /* モバイル版アコーディオンもスリムに揃える */
+    grid-template-columns: 60px 65px 105px 65px; /* 日付を60pxに詰め、売上枠を少し広げて被りを防止 */
     align-items: center;
   }
 
