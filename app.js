@@ -41,8 +41,8 @@ function initEventListeners() {
 
   if (addRecordBtn) {
     addRecordBtn.addEventListener('click', () => {
-      const today = new Date().toISOString().split('T')[0];
-      openModalWithDate(today);
+      const targetDate = getEffectiveDateStr();
+      openModalWithDate(targetDate);
     });
   }
 
@@ -222,8 +222,7 @@ function initEventListeners() {
         e.preventDefault();
         const val = btn.dataset.val;
         
-        const today = new Date();
-        const todayStr = formatDateStr(today.getFullYear(), today.getMonth(), today.getDate());
+        const todayStr = getEffectiveDateStr();
         
         let todayRecord = state.records.find(r => r.date === todayStr);
         
@@ -316,6 +315,16 @@ function formatDateStr(year, month, day) {
   const m = String(d.getMonth() + 1).padStart(2, '0');
   const dateVal = String(d.getDate()).padStart(2, '0');
   return `${y}-${m}-${dateVal}`;
+}
+
+// 朝8時までは「前日（昨日）」として日付文字列を返す判定関数 (夜勤明け対策)
+function getEffectiveDateStr() {
+  const now = new Date();
+  // 朝8時より前なら1日（24時間）戻す
+  if (now.getHours() < 8) {
+    now.setDate(now.getDate() - 1);
+  }
+  return formatDateStr(now.getFullYear(), now.getMonth(), now.getDate());
 }
 
 // 日本の祝日判定 (2025〜2027年対応の簡易・正確な判定)
@@ -525,13 +534,12 @@ function updateQuickTipWidget() {
   const valEl = document.getElementById('quick-tip-current-val');
   if (!dateEl || !valEl) return;
 
-  const today = new Date();
-  const todayStr = formatDateStr(today.getFullYear(), today.getMonth(), today.getDate());
+  const todayStr = getEffectiveDateStr();
   
-  // 今日の日付を表示用にフォーマット
+  // 対象の日付を表示用にフォーマット
   dateEl.innerText = formatLocalDate(todayStr);
 
-  // 今日のチップ総額を取得
+  // 対象日のチップ総額を取得
   const todayRecord = state.records.find(r => r.date === todayStr);
   const currentTip = todayRecord ? (todayRecord.tips || 0) : 0;
   
