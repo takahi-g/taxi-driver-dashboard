@@ -1023,94 +1023,92 @@ input:focus {
   }
   
   .work-list-item {
-    padding: 0.8rem 1rem;
-    min-height: 75px;          /* 高さを少し持たせて2行対応に */
-    display: flex;
-    flex-wrap: wrap;           /* 画面が狭いときは自動折り返し */
-    gap: 0.4rem 0.75rem;       /* 縦横に適度なすき間 */
+    padding: 0.8rem 0.35rem;   /* 左右の余白を極限まで詰めて横幅を確保 */
+    min-height: 52px;
+    display: grid;
+    grid-template-columns: 55px 44px 74px 62px 50px 15px; /* 全項目を1行に収める超コンパクトグリッド */
     align-items: center;
   }
   
   .work-list-item .day-number {
-    font-size: 1.25rem;
+    font-size: 1.1rem;         /* 1.15remから1.1remへ微縮小 */
     font-weight: 700;
-    min-width: 65px;
   }
   
   .work-list-item .day-hours {
-    font-size: 1.15rem;
-    padding: 0.15rem 0.4rem;
+    font-size: 1.05rem;        /* 1.15remから1.05remへ微縮小 */
+    padding: 0.1rem 0.2rem;
+    justify-self: center;
   }
   
   .work-list-item .day-earnings {
-    font-size: 1.25rem;
+    font-size: 1.1rem;         /* 1.25remから1.1remへ微縮小 */
     font-weight: 700;
-    min-width: 85px;
+    justify-self: center;
   }
 
   .work-list-item .day-hourly {
-    font-size: 1.15rem;
+    font-size: 1.0rem;         /* 1.15remから1.0remへ微縮小 */
     color: var(--color-primary);
-    background-color: rgba(245, 176, 65, 0.1);
-    padding: 0.1rem 0.35rem;
-    border-radius: var(--radius-sm);
+    background: none;          /* 背景バッジを廃止してスリム化 */
+    padding: 0;
+    justify-self: center;
   }
 
   .work-list-item .day-tips {
-    font-size: 1.15rem;
+    font-size: 1.05rem;        /* 1.15remから1.05remへ微縮小 */
+    justify-self: center;
   }
 
   .work-list-item .day-notes-indicator {
-    margin-left: auto;         /* 右端に寄せる */
+    justify-self: center;
   }
 
   /* モバイル画面用：アコーディオン勤務履歴の整列 */
   .accordion-item {
-    padding: 0.85rem 1rem;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.5rem;
+    padding: 0.85rem 0.35rem;
+    display: grid;
+    grid-template-columns: 1fr;
   }
 
   .accordion-item-info {
-    display: flex;
-    flex-wrap: wrap;           /* 自動折り返し */
-    gap: 0.4rem 0.75rem;
+    display: grid;
+    grid-template-columns: 47px 44px 82px 62px 50px 15px; /* アコーディオン側も1行に統一 */
     align-items: center;
   }
 
   .acc-date {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     font-weight: 700;
-    min-width: 50px;
   }
 
   .acc-hours {
-    font-size: 1.15rem;
-    padding: 0.15rem 0.4rem;
+    font-size: 1.05rem;
+    padding: 0.1rem 0.2rem;
+    justify-self: center;
   }
 
   .acc-earnings {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     font-weight: 700;
-    min-width: 85px;
+    justify-self: center;
   }
 
   .acc-hourly {
-    font-size: 1.15rem;
+    font-size: 1.0rem;
     color: var(--color-primary);
-    background-color: rgba(245, 176, 65, 0.1);
-    padding: 0.1rem 0.35rem;
-    border-radius: var(--radius-sm);
+    background: none;
+    padding: 0;
+    justify-self: center;
   }
 
   .acc-tips {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
+    justify-self: center;
   }
 
   .accordion-item .note-indicator {
-    margin-left: auto;         /* 右端に寄せる */
+    justify-self: center;
   }
 }
 
