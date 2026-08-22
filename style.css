@@ -280,12 +280,12 @@ body {
 }
 
 .work-list-item {
-  padding: 0.8rem 1.25rem;
+  padding: 0.8rem 1rem;
   background-color: rgba(22, 28, 45, 0.85);
   border: 1px solid rgba(245, 176, 65, 0.15);
   border-radius: var(--radius-md);
   display: grid;
-  grid-template-columns: 85px 80px 125px 80px 30px; /* メモマーク用に5列目を追加 */
+  grid-template-columns: 80px 75px 115px 95px 75px 25px; /* 時給(/h)用カラムを追加 */
   align-items: center;
   transition: var(--transition-smooth);
   cursor: pointer;
@@ -531,9 +531,16 @@ body {
 
 .accordion-item-info {
   display: grid;
-  grid-template-columns: 75px 80px 130px 80px 30px; /* メモマーク用に5列目を追加 */
+  grid-template-columns: 70px 75px 120px 95px 75px 25px; /* 時給(/h)用カラムを追加 */
   align-items: center;
   white-space: nowrap;
+}
+
+.work-list-item .day-hourly {
+  font-size: 1.25rem;         /* 文字が被らないように1.25remに調整 */
+  font-weight: 700;
+  color: var(--color-primary);
+  justify-self: center;
 }
 
 /* 文字色の統一 (日付＝平日白, 時間＝オレンジ, 売上＝黄, チップ＝白) & 1.35remにサイズ統一 */
@@ -572,6 +579,13 @@ body {
   color: #48bb78;            /* 濃すぎない緑 */
   font-weight: 700;
   margin-right: 0.15rem;
+}
+
+.acc-hourly {
+  font-size: 1.25rem;         /* 被り防止のため1.25remに調整 */
+  font-weight: 700;
+  color: var(--color-primary);
+  justify-self: center;
 }
 
 .accordion-item-actions {
@@ -1009,51 +1023,53 @@ input:focus {
   }
   
   .work-list-item {
-    padding: 0.8rem 0.6rem;
+    padding: 0.8rem 0.4rem;
     min-height: 52px;
     display: grid;
-    grid-template-columns: 68px 57px 92px 58px 20px; /* メモ用スペースを追加 */
+    grid-template-columns: 58px 48px 84px 50px 48px 18px; /* 時給(/h)用スペースを確保 */
   }
   
   .work-list-item .day-number {
-    font-size: 1.25rem;        /* 1.25rem に統一 */
+    font-size: 1.15rem;        /* モバイルは文字被り防止のため少し縮小 */
   }
   
   .work-list-item .day-hours {
-    font-size: 1.25rem;        /* 1.25rem に統一 */
-    padding: 0.15rem 0.35rem;
+    font-size: 1.15rem;
+    padding: 0.1rem 0.25rem;
   }
   
   .work-list-item .day-earnings, 
-  .work-list-item .day-tips {
-    font-size: 1.25rem;        /* 1.25rem に統一 */
+  .work-list-item .day-tips,
+  .work-list-item .day-hourly {
+    font-size: 1.15rem;
   }
 
   /* モバイル画面用：アコーディオン勤務履歴の整列と文字サイズ拡大 */
   .accordion-item {
-    padding: 0.85rem 0.6rem;
+    padding: 0.85rem 0.4rem;
     display: grid;
     grid-template-columns: 1fr;
   }
 
   .accordion-item-info {
     display: grid;
-    grid-template-columns: 58px 57px 97px 58px 20px; /* メモ用スペースを追加 */
+    grid-template-columns: 50px 48px 92px 50px 48px 18px; /* 時給(/h)用スペースを確保 */
     align-items: center;
   }
 
   .acc-date {
-    font-size: 1.25rem;        /* 1.25rem に統一 */
+    font-size: 1.15rem;
   }
 
   .acc-hours {
-    font-size: 1.25rem;        /* 1.25rem に統一 */
-    padding: 0.15rem 0.35rem;
+    font-size: 1.15rem;
+    padding: 0.1rem 0.25rem;
   }
 
   .acc-earnings, 
-  .acc-tips {
-    font-size: 1.25rem;        /* 1.25rem に統一 */
+  .acc-tips,
+  .acc-hourly {
+    font-size: 1.15rem;
   }
 }
 

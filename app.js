@@ -688,10 +688,15 @@ function updateHistoryAccordion() {
       
       const formattedDate = formatLocalDateShort(r.date);
       const hasNotesIcon = r.notes ? '<span class="note-indicator" style="color: var(--color-primary); font-size: 1.15rem; font-weight: 800; justify-self: center; display: flex; align-items: center; justify-content: center;"><i data-lucide="sticky-note" style="width: 18px; height: 18px;"></i></span>' : '<span></span>';
+      
+      const rNetHours = Math.max(0, r.hours - 3);
+      const rHourly = rNetHours > 0 ? Math.round(r.earnings / rNetHours) : 0;
+      
       infoEl.innerHTML = `
         <span class="acc-date">${formattedDate}</span>
         <span class="acc-hours">${r.hours.toFixed(1)}h</span>
         <span class="acc-earnings">¥${r.earnings.toLocaleString()}</span>
+        <span class="acc-hourly">¥${rHourly.toLocaleString()}/h</span>
         <span class="acc-tips"><span class="tip-c">C</span>${r.tips.toLocaleString()}</span>
         ${hasNotesIcon}
       `;
@@ -813,6 +818,14 @@ function createWorkListItem(dayNum, weekdayStr, dayIndex, dateStr, isToday) {
     earningsEl.className = 'day-earnings';
     earningsEl.innerText = `¥${dayEarnings.toLocaleString()}`;
     itemEl.appendChild(earningsEl);
+
+    // その日の平均時間売上（休憩3時間を引いた実働時給）
+    const dayNetHours = Math.max(0, dayHours - 3);
+    const dayHourly = dayNetHours > 0 ? Math.round(dayEarnings / dayNetHours) : 0;
+    const hourlyEl = document.createElement('span');
+    hourlyEl.className = 'day-hourly';
+    hourlyEl.innerText = `¥${dayHourly.toLocaleString()}/h`;
+    itemEl.appendChild(hourlyEl);
 
     // チップ (Cの部分だけ緑に色分け)
     const tipsEl = document.createElement('span');
