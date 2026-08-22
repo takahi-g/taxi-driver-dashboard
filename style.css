@@ -285,7 +285,7 @@ body {
   border: 1px solid rgba(245, 176, 65, 0.15);
   border-radius: var(--radius-md);
   display: grid;
-  grid-template-columns: 85px 80px 125px 80px; /* PC版も無駄のない列幅でスリム化 */
+  grid-template-columns: 85px 80px 125px 80px 30px; /* メモマーク用に5列目を追加 */
   align-items: center;
   transition: var(--transition-smooth);
   cursor: pointer;
@@ -531,7 +531,7 @@ body {
 
 .accordion-item-info {
   display: grid;
-  grid-template-columns: 75px 80px 130px 80px; /* 日付幅を75pxに少し詰め、被りを防止 */
+  grid-template-columns: 75px 80px 130px 80px 30px; /* メモマーク用に5列目を追加 */
   align-items: center;
   white-space: nowrap;
 }
@@ -1012,7 +1012,7 @@ input:focus {
     padding: 0.8rem 0.6rem;
     min-height: 52px;
     display: grid;
-    grid-template-columns: 70px 65px 95px 65px; /* アコーディオンと完全に揃えてスリム化 */
+    grid-template-columns: 68px 57px 92px 58px 20px; /* メモ用スペースを追加 */
   }
   
   .work-list-item .day-number {
@@ -1038,7 +1038,7 @@ input:focus {
 
   .accordion-item-info {
     display: grid;
-    grid-template-columns: 60px 65px 105px 65px; /* 日付を60pxに詰め、売上枠を少し広げて被りを防止 */
+    grid-template-columns: 58px 57px 97px 58px 20px; /* メモ用スペースを追加 */
     align-items: center;
   }
 

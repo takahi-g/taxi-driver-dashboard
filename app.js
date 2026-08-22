@@ -70,6 +70,7 @@ function initEventListeners() {
       const endTime = document.getElementById('input-end-time').value;
       const earnings = parseInt(document.getElementById('input-earnings').value, 10) || 0;
       const tips = parseInt(document.getElementById('input-tips').value, 10) || 0;
+      const notes = document.getElementById('input-notes').value || '';
 
       // 勤務時間の計算
       const hours = (startTime && endTime) ? calculateHours(startTime, endTime) : 0;
@@ -81,7 +82,8 @@ function initEventListeners() {
         endTime,
         hours,
         earnings,
-        tips
+        tips,
+        notes
       };
 
       // 同一日付の既存データがあれば上書き、なければ新規追加
@@ -412,7 +414,8 @@ function loadRecords() {
           endTime: r.endTime || '',
           hours: (r.startTime && r.endTime) ? calculateHours(r.startTime, r.endTime) : 0,
           earnings: (r.earnings !== undefined && r.earnings !== null && !isNaN(r.earnings)) ? Number(r.earnings) : 0,
-          tips: (r.tips !== undefined && r.tips !== null && !isNaN(r.tips)) ? Number(r.tips) : 0
+          tips: (r.tips !== undefined && r.tips !== null && !isNaN(r.tips)) ? Number(r.tips) : 0,
+          notes: r.notes || ''
         }));
         sortRecords();
         saveRecords(); // 計算式アップデートをローカルに即時反映して保存
@@ -476,7 +479,8 @@ function pasteRestore() {
         endTime: r.endTime || '',
         hours: (r.hours !== undefined && r.hours !== null && !isNaN(r.hours)) ? Number(r.hours) : 0,
         earnings: (r.earnings !== undefined && r.earnings !== null && !isNaN(r.earnings)) ? Number(r.earnings) : 0,
-        tips: (r.tips !== undefined && r.tips !== null && !isNaN(r.tips)) ? Number(r.tips) : 0
+        tips: (r.tips !== undefined && r.tips !== null && !isNaN(r.tips)) ? Number(r.tips) : 0,
+        notes: r.notes || ''
       }));
 
       if (importedRecords.length === 0) {
@@ -683,11 +687,13 @@ function updateHistoryAccordion() {
       infoEl.className = 'accordion-item-info';
       
       const formattedDate = formatLocalDateShort(r.date);
+      const hasNotesIcon = r.notes ? '<span class="note-indicator" style="color: var(--color-primary); font-size: 1.15rem; font-weight: 800; justify-self: center; display: flex; align-items: center; justify-content: center;"><i data-lucide="sticky-note" style="width: 18px; height: 18px;"></i></span>' : '<span></span>';
       infoEl.innerHTML = `
         <span class="acc-date">${formattedDate}</span>
         <span class="acc-hours">${r.hours.toFixed(1)}h</span>
         <span class="acc-earnings">¥${r.earnings.toLocaleString()}</span>
         <span class="acc-tips"><span class="tip-c">C</span>${r.tips.toLocaleString()}</span>
+        ${hasNotesIcon}
       `;
 
       // 行をタップした時は登録モーダルを開く (編集)
@@ -813,6 +819,21 @@ function createWorkListItem(dayNum, weekdayStr, dayIndex, dateStr, isToday) {
     tipsEl.className = 'day-tips';
     tipsEl.innerHTML = `<span class="tip-c">C</span>${dayTips.toLocaleString()}`;
     itemEl.appendChild(tipsEl);
+
+    // メモが存在する場合はノートアイコンを表示
+    const hasNotes = dayRecords.some(r => r.notes && r.notes.trim() !== '');
+    const notesEl = document.createElement('span');
+    notesEl.className = 'day-notes-indicator';
+    notesEl.style.justifySelf = 'center';
+    notesEl.style.display = 'flex';
+    notesEl.style.alignItems = 'center';
+    notesEl.style.justifyContent = 'center';
+    if (hasNotes) {
+      notesEl.innerHTML = `<i data-lucide="sticky-note" style="width: 18px; height: 18px; color: var(--color-primary);"></i>`;
+    } else {
+      notesEl.innerHTML = '';
+    }
+    itemEl.appendChild(notesEl);
   } else {
     // 未登録時のプレースホルダー表示
     const emptyInfoEl = document.createElement('span');
@@ -945,6 +966,7 @@ function openModalWithDate(dateStr) {
     // 金額やチップが0の場合は空文字を設定し、placeholder="0" に任せる（消す手間を削減）
     document.getElementById('input-earnings').value = existingRecord.earnings === 0 ? '' : existingRecord.earnings;
     document.getElementById('input-tips').value = existingRecord.tips === 0 ? '' : existingRecord.tips;
+    document.getElementById('input-notes').value = existingRecord.notes || '';
 
     // 既存レコードがあるため、削除ボタンを表示
     if (deleteBtn) {
@@ -967,6 +989,7 @@ function openModalWithDate(dateStr) {
     document.getElementById('input-end-time').value = '04:40';
     document.getElementById('input-earnings').value = '';
     document.getElementById('input-tips').value = '';
+    document.getElementById('input-notes').value = '';
 
     // 新規レコード時は削除ボタンを非表示にする
     if (deleteBtn) {
