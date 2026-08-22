@@ -985,7 +985,7 @@ input:focus {
 
 @media (max-width: 768px) {
   .app-container {
-    padding: 0.5rem 1rem 8rem 1rem;
+    padding: 0.5rem 0.4rem 8rem 0.4rem; /* 左右の余白を 1rem から 0.4rem に広げて、リスト自体の横幅を限界まで拡大 */
   }
   
   .main-header {
@@ -1023,40 +1023,40 @@ input:focus {
   }
   
   .work-list-item {
-    padding: 0.8rem 0.35rem;   /* 左右の余白を極限まで詰めて横幅を確保 */
+    padding: 0.8rem 0.5rem;   /* 左右の余白を極小に */
     min-height: 52px;
     display: grid;
-    grid-template-columns: 55px 44px 74px 62px 50px 15px; /* 全項目を1行に収める超コンパクトグリッド */
+    grid-template-columns: 58px 46px 82px 76px 54px 15px; /* 全体の横幅が広がった分、各列幅を最適化 (特に売上を82px、時給を76pxに拡大) */
     align-items: center;
   }
   
   .work-list-item .day-number {
-    font-size: 1.1rem;         /* 1.15remから1.1remへ微縮小 */
+    font-size: 1.15rem;         /* 視認性を上げるため 1.15rem に少し戻す */
     font-weight: 700;
   }
   
   .work-list-item .day-hours {
-    font-size: 1.05rem;        /* 1.15remから1.05remへ微縮小 */
-    padding: 0.1rem 0.2rem;
+    font-size: 1.1rem;         /* 1.1rem に調整 */
+    padding: 0.15rem 0.3rem;
     justify-self: center;
   }
   
   .work-list-item .day-earnings {
-    font-size: 1.1rem;         /* 1.25remから1.1remへ微縮小 */
+    font-size: 1.15rem;         /* 1.15rem に少し戻す */
     font-weight: 700;
     justify-self: center;
   }
 
   .work-list-item .day-hourly {
-    font-size: 1.0rem;         /* 1.15remから1.0remへ微縮小 */
+    font-size: 1.1rem;         /* 1.1rem に少し戻す */
     color: var(--color-primary);
-    background: none;          /* 背景バッジを廃止してスリム化 */
+    background: none;
     padding: 0;
     justify-self: center;
   }
 
   .work-list-item .day-tips {
-    font-size: 1.05rem;        /* 1.15remから1.05remへ微縮小 */
+    font-size: 1.1rem;         /* 1.1rem に少し戻す */
     justify-self: center;
   }
 
@@ -1066,19 +1066,19 @@ input:focus {
 
   /* モバイル画面用：アコーディオン勤務履歴の整列 */
   .accordion-item {
-    padding: 0.85rem 0.35rem;
+    padding: 0.85rem 0.5rem;
     display: grid;
     grid-template-columns: 1fr;
   }
 
   .accordion-item-info {
     display: grid;
-    grid-template-columns: 47px 44px 82px 62px 50px 15px; /* アコーディオン側も1行に統一 */
+    grid-template-columns: 50px 46px 90px 76px 54px 15px; /* アコーディオン側も売上と時給の幅をしっかり確保 */
     align-items: center;
   }
 
   .acc-date {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     font-weight: 700;
   }
 
