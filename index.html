@@ -21,13 +21,13 @@
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.321.0/dist/umd/lucide.min.js"></script>
   
   <!-- スタイルシートの読み込み (キャッシュ対策用パラメータ付与) -->
-  <link rel="stylesheet" href="style.css?v=2026.11.20.15:31.00">
+  <link rel="stylesheet" href="style.css?v=2026.11.20.15:37.00">
 </head>
 <body>
   <div class="app-container">
     <!-- トップバー (バージョン & 更新ボタン) -->
     <div class="top-bar">
-      <span class="version-badge">v2026.11.20.15:31.00</span>
+      <span class="version-badge">v2026.11.20.15:37.00</span>
       <button id="refresh-btn" class="btn-icon" title="ページを更新"><i data-lucide="refresh-cw"></i></button>
     </div>
 
@@ -158,9 +158,10 @@
             </div>
           </div>
           <div class="summary-card text-info" id="card-wage">
-            <div class="card-icon"><i data-lucide="coins"></i></div>
             <div class="card-data" style="width: 100%;">
-              <span class="card-label">推定時給 (歩合3段階)</span>
+              <span class="card-label" style="display: flex; align-items: center; gap: 0.35rem; margin-bottom: 0.25rem;">
+                <i data-lucide="coins" style="width: 15px; height: 15px; color: #a78bfa;"></i> 推定時給 (歩合3段階)
+              </span>
               <div class="wage-tiers-list">
                 <div class="wage-tier-row">
                   <span class="wage-tier-label">55% <small>(〜47万)</small></span>
@@ -338,6 +339,6 @@
   </div>
 
   <!-- アプリケーションコードの読み込み (キャッシュ対策用パラメータ付与) -->
-  <script src="app.js?v=2026.11.20.15:31.00"></script>
+  <script src="app.js?v=2026.11.20.15:37.00"></script>
 </body>
 </html>

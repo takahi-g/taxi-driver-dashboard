@@ -49,6 +49,7 @@ body {
   min-height: 100vh;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 /* アプリコンテナ */
@@ -364,8 +365,8 @@ body {
 
 .summary-section {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
   margin-bottom: 1.5rem;
 }
 
@@ -376,11 +377,13 @@ body {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   box-shadow: var(--glass-shadow);
-  padding: 1.1rem 1.25rem;
+  padding: 0.95rem 0.9rem;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
   transition: var(--transition-smooth);
+  min-width: 0;
+  overflow: hidden;
 }
 
 .summary-card:hover {
@@ -389,36 +392,41 @@ body {
 }
 
 .card-icon {
-  width: 44px;
-  height: 44px;
+  width: 38px;
+  height: 38px;
   border-radius: var(--radius-md);
   background-color: rgba(255, 255, 255, 0.04);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--text-muted);
+  flex-shrink: 0;
 }
 
 .card-icon i {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
 .card-data {
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  flex: 1;
 }
 
 .card-label {
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--text-muted);
+  white-space: nowrap;
 }
 
 .card-value {
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   font-weight: 800;
   letter-spacing: -0.01em;
+  white-space: nowrap;
 }
 
 /* サマリーカードの個別彩色 */
@@ -430,23 +438,22 @@ body {
 #card-tips .card-value { color: var(--color-accent); }
 #card-hourly .card-icon { color: var(--color-primary); background-color: rgba(245, 176, 65, 0.1); }
 #card-hourly .card-value { color: var(--color-primary); }
-#card-wage .card-icon { color: #a78bfa; background-color: rgba(167, 139, 250, 0.12); flex-shrink: 0; }
+#card-wage { padding: 0.75rem 0.7rem; }
 
 /* 3段階推定時給リスト */
 .wage-tiers-list {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
-  margin-top: 0.35rem;
+  gap: 0.25rem;
   width: 100%;
 }
 
 .wage-tier-row {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
-  gap: 0.5rem;
-  padding: 0.2rem 0.5rem;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem 0.4rem;
   border-radius: var(--radius-sm);
   background-color: rgba(255, 255, 255, 0.03);
   border: 1px solid transparent;
@@ -459,27 +466,27 @@ body {
 }
 
 .wage-tier-label {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--text-main);
   white-space: nowrap;
 }
 
 .wage-tier-label small {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-weight: 500;
   color: var(--text-muted);
 }
 
 .wage-tier-val {
-  font-size: 1.25rem;
+  font-size: 1.05rem;
   font-weight: 800;
   color: var(--color-primary);
   white-space: nowrap;
 }
 
 .wage-tier-val .unit {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--text-muted);
   margin-left: 1px;
