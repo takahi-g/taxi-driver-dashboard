@@ -626,6 +626,39 @@ function updateMetrics() {
   document.getElementById('val-earnings').innerText = `¥${totalEarnings.toLocaleString()}`;
   document.getElementById('val-tips').innerText = `¥${totalTips.toLocaleString()}`;
   document.getElementById('val-hourly').innerHTML = `¥${averageHourly.toLocaleString()}<span class="unit">/h</span>`;
+
+  // 3段階の歩合率による推定時給 (55%, 57.9%, 60.8%)
+  const wage55 = Math.round(averageHourly * 0.55);
+  const wage579 = Math.round(averageHourly * 0.579);
+  const wage608 = Math.round(averageHourly * 0.608);
+
+  const wage55El = document.getElementById('val-wage-55');
+  const wage579El = document.getElementById('val-wage-579');
+  const wage608El = document.getElementById('val-wage-608');
+
+  if (wage55El) wage55El.innerHTML = `¥${wage55.toLocaleString()}<span class="unit">/h</span>`;
+  if (wage579El) wage579El.innerHTML = `¥${wage579.toLocaleString()}<span class="unit">/h</span>`;
+  if (wage608El) wage608El.innerHTML = `¥${wage608.toLocaleString()}<span class="unit">/h</span>`;
+
+  // 総売上金額に応じて該当する歩合ランクの行をハイライト
+  const row55 = wage55El ? wage55El.closest('.wage-tier-row') : null;
+  const row579 = wage579El ? wage579El.closest('.wage-tier-row') : null;
+  const row608 = wage608El ? wage608El.closest('.wage-tier-row') : null;
+
+  [row55, row579, row608].forEach(row => {
+    if (row) row.classList.remove('active-tier');
+  });
+
+  if (totalEarnings > 0) {
+    if (totalEarnings >= 550000 && row608) {
+      row608.classList.add('active-tier');
+    } else if (totalEarnings >= 470000 && row579) {
+      row579.classList.add('active-tier');
+    } else if (row55) {
+      row55.classList.add('active-tier');
+    }
+  }
+
   document.getElementById('record-count').innerText = `${state.records.length} 件の記録`;
 }
 

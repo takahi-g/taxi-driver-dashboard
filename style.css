@@ -430,6 +430,60 @@ body {
 #card-tips .card-value { color: var(--color-accent); }
 #card-hourly .card-icon { color: var(--color-primary); background-color: rgba(245, 176, 65, 0.1); }
 #card-hourly .card-value { color: var(--color-primary); }
+#card-wage .card-icon { color: #a78bfa; background-color: rgba(167, 139, 250, 0.12); flex-shrink: 0; }
+
+/* 3段階推定時給リスト */
+.wage-tiers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+  width: 100%;
+}
+
+.wage-tier-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid transparent;
+  transition: var(--transition-smooth);
+}
+
+.wage-tier-row.active-tier {
+  background-color: rgba(245, 176, 65, 0.14);
+  border-color: rgba(245, 176, 65, 0.45);
+}
+
+.wage-tier-label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+.wage-tier-label small {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.wage-tier-val {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+.wage-tier-val .unit {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-left: 1px;
+}
 
 /* 期間選択フィルター用のスタイリング */
 .filter-section select {
